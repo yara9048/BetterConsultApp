@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled6/Providers/Auth/LoginProvider.dart';
 
 import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
@@ -32,7 +33,7 @@ class _LoginState extends State<Login> {
         create: (_) => LoginProvider(),
         child: Consumer<LoginProvider>(
           builder: (context, auth, _) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
               if (auth.isSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -44,9 +45,9 @@ class _LoginState extends State<Login> {
                     backgroundColor: colorScheme.secondary,
                   ),
                 );
-
                 auth.reset();
-                String? role = auth.role;
+                final prefs = await SharedPreferences.getInstance();
+                final role = prefs.getString('user_role');
                 print("User role is: $role");
                 if (role == "user") {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Navbar()));

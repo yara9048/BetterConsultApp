@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Providers/Auth/logoutProvider.dart';
 import '../../../main.dart';
+import '../../Auth/Register/Compoenets/text.dart';
+import '../../Auth/Register/Pages/IsConsaltant.dart';
 import '../Components/InfoCard.dart';
 import '../Components/ProfileItemRow.dart';
 import '../Components/SectionHeader.dart';
+import '../Components/ThemeLanguagePopup.dart';
 import '../Components/_buildCompactDropdown.dart';
 import '../Pages/Notifications.dart';
 
@@ -18,6 +21,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late bool isDarkMode;
   late String currentLanguage;
+  bool _isConsultant = false;
 
   @override
   void didChangeDependencies() {
@@ -242,6 +246,41 @@ class _ProfileState extends State<Profile> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 24),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Theme.of(context).colorScheme.secondary,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blueAccent.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {
+                          _Confirmation();
+                          print("Confirmed as Consultant!");
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                          child: Center(
+                            child: text(
+                              label: "Start Your Consultant Journey with us",
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
 
                   const SizedBox(height: 10),
                 ],
@@ -252,4 +291,111 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+  void _Confirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 12,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSurface,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Confiramtion",
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.primary,
+                    fontFamily: 'NotoSerifGeorgian',
+                  ),
+                ),
+                const SizedBox(height: 20),
+            Text(
+              "By becoming a consultant, you will be able to share your experience, "
+                  "but also will be having higher responsibilities. "
+                  "However, this role requires dedication, professionalism, "
+                  "and consistent performance. Are you ready to take on these responsibilities?",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).colorScheme.primary,
+                fontFamily: 'NotoSerifGeorgian',
+              ),),
+                const SizedBox(height: 30),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Theme.of(context).colorScheme.primary),
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          foregroundColor: Theme.of(context).colorScheme.primary,
+                          textStyle: const TextStyle(
+                            fontFamily: 'NotoSerifGeorgian',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("CANCEL"),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          textStyle: const TextStyle(
+                            fontFamily: 'NotoSerifGeorgian',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context){return Isconsaltant();}));
+                        },
+                        child: const Text("Confirm"),
+                      ),
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

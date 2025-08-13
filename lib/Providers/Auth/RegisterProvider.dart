@@ -40,7 +40,7 @@ class RegisterProvider with ChangeNotifier {
       final response = await DioHelper.postData(
         url: url,
         data: {
-          'email': 'moonyzrare696@gmail.com',
+          'email': 'moonyzrare096@gmail.com',
           'password': password,
           'gender': gender,
           'role': role,
@@ -53,8 +53,11 @@ class RegisterProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         final token = response.data['token'];
         if (token != null) {
-          final prefs = await SharedPreferences.getInstance();
+          String token = response.data['token'];
+          final String? role = response.data['user']?['role']?.toString();
+          SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', token);
+          await prefs.setString('user_role', role!);
           print('Token saved: $token');
         }
         _isSuccess = true;

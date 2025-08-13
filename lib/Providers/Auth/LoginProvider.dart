@@ -8,12 +8,10 @@ class LoginProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   bool _isSuccess = false;
-  String? _role; // <-- store role here
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isSuccess => _isSuccess;
-  String? get role => _role; // <-- public getter
 
   Future<void> login(String email, String password) async {
     _isLoading = true;
@@ -22,6 +20,7 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
 
     String url = Endpoints.baseUrl + Endpoints.login;
+    print(url);
     try {
       final response = await DioHelper.postData(
         url: url,
@@ -30,15 +29,14 @@ class LoginProvider with ChangeNotifier {
           'password': password,
         },
       );
-
+      print(email);
+      print(password);
       if (response.statusCode == 200) {
         String token = response.data['token'];
-        _role = response.data['user']?['role']?.toString();
-        print('roleeeeeeeeeeee $_role');
-
+        final String? role = response.data['user']?['role']?.toString();
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', token);
-        await prefs.setString('user_role', _role!); // optional: persist role
+        await prefs.setString('user_role', role!);
 
         _isSuccess = true;
       } else if (response.statusCode == 401) {
@@ -59,7 +57,6 @@ class LoginProvider with ChangeNotifier {
     _isLoading = false;
     _errorMessage = null;
     _isSuccess = false;
-    _role = null; // reset role if needed
     notifyListeners();
   }
 }

@@ -17,7 +17,7 @@ class _consultNavBarState extends State<consultNavBar> {
   final List<Widget> _pages = [
     ProfileCons(),
     HomeCons(),
-    addConsultation()
+    AddConsultation()
   ];
 
   @override

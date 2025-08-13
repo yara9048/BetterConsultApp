@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../Providers/Auth/RegisterProvider.dart';
+import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import '../../../Home/Pages/NavBar.dart';
 import '../Compoenets/text.dart';
+import 'IsConsaltant.dart';
 
 class Register extends StatefulWidget {
   final String email;
+
   const Register({super.key, required this.email});
 
   @override
@@ -39,8 +43,10 @@ class _RegisterState extends State<Register> {
     return '';
   }
 
-  InputDecoration _buildInputDecoration(
-      {required String hintText, required ColorScheme colorScheme}) {
+  InputDecoration _buildInputDecoration({
+    required String hintText,
+    required ColorScheme colorScheme,
+  }) {
     return InputDecoration(
       filled: true,
       fillColor: colorScheme.surface.withOpacity(0.05),
@@ -52,31 +58,19 @@ class _RegisterState extends State<Register> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: colorScheme.primary,
-          width: 2.0,
-        ),
+        borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: colorScheme.primary,
-          width: 2.0,
-        ),
+        borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: colorScheme.secondary,
-          width: 2.0,
-        ),
+        borderSide: BorderSide(color: colorScheme.secondary, width: 2.0),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: colorScheme.secondary,
-          width: 2.0,
-        ),
+        borderSide: BorderSide(color: colorScheme.secondary, width: 2.0),
       ),
       errorStyle: TextStyle(
         color: colorScheme.secondary,
@@ -93,14 +87,24 @@ class _RegisterState extends State<Register> {
       create: (_) => RegisterProvider(),
       child: Consumer<RegisterProvider>(
         builder: (context, provider, _) {
-          // react to success state to navigate
           if (provider.isSuccess) {
             // Reset provider state before navigating
-            WidgetsBinding.instance.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
               provider.reset();
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => Navbar()),
-              );
+              final prefs = await SharedPreferences.getInstance();
+              final role = prefs.getString('user_role');
+              print("User role is: $role");
+              if (role == "user") {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => Navbar()),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => Isconsaltant()),
+                );
+              }
             });
           }
 
@@ -123,8 +127,11 @@ class _RegisterState extends State<Register> {
                                 onTap: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Icon(Icons.arrow_back_ios,
-                                    color: colorScheme.primary, size: 28),
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: colorScheme.primary,
+                                  size: 28,
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 180.0),
@@ -183,8 +190,9 @@ class _RegisterState extends State<Register> {
                                   color: colorScheme.surface.withOpacity(0.4),
                                 ),
                                 decoration: _buildInputDecoration(
-                                    hintText: "First name",
-                                    colorScheme: colorScheme),
+                                  hintText: "First name",
+                                  colorScheme: colorScheme,
+                                ),
                               ),
                             ],
                           ),
@@ -212,8 +220,9 @@ class _RegisterState extends State<Register> {
                                   color: colorScheme.surface.withOpacity(0.4),
                                 ),
                                 decoration: _buildInputDecoration(
-                                    hintText: "Last name",
-                                    colorScheme: colorScheme),
+                                  hintText: "Last name",
+                                  colorScheme: colorScheme,
+                                ),
                               ),
                             ],
                           ),
@@ -250,8 +259,9 @@ class _RegisterState extends State<Register> {
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
                           decoration: _buildInputDecoration(
-                              hintText: "Enter your phone number",
-                              colorScheme: colorScheme),
+                            hintText: "Enter your phone number",
+                            colorScheme: colorScheme,
+                          ),
                         ),
                       ],
                     ),
@@ -289,17 +299,18 @@ class _RegisterState extends State<Register> {
                           minHeight: 50,
                         ),
                         children: _genderOptions
-                            .map((gender) => Text(
-                          gender,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'NotoSerifGeorgian',
-                          ),
-                        ))
+                            .map(
+                              (gender) => Text(
+                                gender,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSerifGeorgian',
+                                ),
+                              ),
+                            )
                             .toList(),
-                      )
-                      ,
+                      ),
                     ),
 
                     const SizedBox(height: 20),
@@ -329,24 +340,25 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
-                          decoration: _buildInputDecoration(
-                              hintText: "Enter your password",
-                              colorScheme: colorScheme)
-                              .copyWith(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: colorScheme.primary,
+                          decoration:
+                              _buildInputDecoration(
+                                hintText: "Enter your password",
+                                colorScheme: colorScheme,
+                              ).copyWith(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: colorScheme.primary,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -378,31 +390,32 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
-                          decoration: _buildInputDecoration(
-                              hintText: "Confirm your password",
-                              colorScheme: colorScheme)
-                              .copyWith(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureConfirmPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: colorScheme.primary,
+                          decoration:
+                              _buildInputDecoration(
+                                hintText: "Confirm your password",
+                                colorScheme: colorScheme,
+                              ).copyWith(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureConfirmPassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: colorScheme.primary,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscureConfirmPassword =
+                                          !_obscureConfirmPassword;
+                                    });
+                                  },
+                                ),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureConfirmPassword = !_obscureConfirmPassword;
-                                });
-                              },
-                            ),
-                          ),
                         ),
                       ],
                     ),
 
                     const SizedBox(height: 30),
 
-                    // Consultant checkbox with label
                     Row(
                       children: [
                         Transform.scale(
@@ -415,14 +428,15 @@ class _RegisterState extends State<Register> {
                               });
                             },
                             activeColor: colorScheme.primary,
-                            checkColor: colorScheme.onSurface, // checkmark color here
+                            checkColor:
+                                colorScheme.onSurface, // checkmark color here
                           ),
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: text(
                             label:
-                            "Are you a consultant? (Selecting this requires verification)",
+                                "Join us as Consultant",
                             fontSize: 14,
                             color: colorScheme.surface.withOpacity(0.5),
                           ),
@@ -452,20 +466,20 @@ class _RegisterState extends State<Register> {
                             role: _isConsultant ? 'consultant' : 'user',
                           );
                         } else {
-                          _scrollController.animateTo(0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut);
+                          _scrollController.animateTo(
+                            0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
                         }
                       },
                       child: provider.isLoading
-                          ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : text(
-                        label: "Register",
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+                              label: "Register",
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
                     ),
                     const SizedBox(height: 40),
                   ],

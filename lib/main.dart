@@ -12,6 +12,7 @@ import 'Providers/Auth/VerifyEmailProvider.dart';
 import 'Ui/Auth/Login/pages/login.dart';
 import 'Ui/Auth/Register/Pages/IsConsaltant.dart';
 import 'Ui/Auth/onBoarding/pages/onBoarding.dart';
+import 'Ui/ConsaltantUi/NavBar/NavBarPages/addConsutation.dart';
 import 'Ui/Home/Pages/NavBar.dart';
 import 'generated/l10n.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ void main() {
             ChangeNotifierProvider(create: (_) => VerifyEmailProvider()),
             ChangeNotifierProvider(create: (_) => SendOTPProvider()),
             ChangeNotifierProvider(create: (_) => NewPasswordProvider()),
+
 
 
 
@@ -112,7 +114,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const Login(),
         '/navbar': (context) => Navbar()
       },
-      home:  Isconsaltant(),
+      home:  Login(),
     );
   }
 }
