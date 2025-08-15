@@ -1,8 +1,11 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled6/Ui/Auth/Register/Pages/register.dart';
 
 import '../../../../Providers/Auth/VerifyEmailProvider.dart';
+import '../../../../generated/l10n.dart';
 import '../Compoenets/OtpField.dart';
 import '../Compoenets/text.dart';
 
@@ -41,7 +44,7 @@ class _SendCodeState extends State<SendCode> {
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: text(
-                      label: "OTP unvalid",
+                      label: S.of(context).OTPFailed,
                       fontSize: 14,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
@@ -54,7 +57,7 @@ class _SendCodeState extends State<SendCode> {
           if (provider.isVerified) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Email verified successfully!')),
+                SnackBar(content: Text(S.of(context).OTPSuccess)),
               );
               Navigator.pushReplacement(
                 context,
@@ -71,8 +74,9 @@ class _SendCodeState extends State<SendCode> {
             body: SingleChildScrollView(
               child: Stack(
                 children: [
-                  Image.asset("assets/images/Untitled design (1).png"),
-                  Positioned(
+                  Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),child: Image.asset("assets/images/Untitled design (1).png")),                  Positioned(
                     top: 70,
                     left: 30,
                     child: Row(
@@ -86,13 +90,16 @@ class _SendCodeState extends State<SendCode> {
                           ),
                         ),
                         const SizedBox(width: 18),
-                        Text(
-                          "Email Verification",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontFamily: 'NotoSerifGeorgian',
+                        Padding(
+                          padding: EdgeInsets.only(left: isArabic()? 20:0),
+                          child: Text(
+                            S.of(context).emailVerification,
+                            style: TextStyle(
+                              fontSize: isArabic()? 23:25,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontFamily: 'NotoSerifGeorgian',
+                            ),
                           ),
                         ),
                       ],
@@ -103,9 +110,9 @@ class _SendCodeState extends State<SendCode> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 200.0),
+                          padding: EdgeInsets.only(left: isArabic() ? 0:200.0 , right:  isArabic()? 200 :0),
                           child: text(
-                            label: "Step 2 out of 3",
+                            label: S.of(context).step2,
                             fontSize: 14,
                             color: Theme.of(context)
                                 .colorScheme
@@ -115,7 +122,7 @@ class _SendCodeState extends State<SendCode> {
                         ),
                         const SizedBox(height: 50),
                         Text(
-                          "Get your Code",
+                          S.of(context).OTP1,
                           style: TextStyle(
                             fontSize: 24,
                             color: Theme.of(context).colorScheme.primary,
@@ -124,7 +131,7 @@ class _SendCodeState extends State<SendCode> {
                           ),
                         ),
                         Text(
-                          "Please enter your 6 digit code that",
+                          S.of(context).OTP2,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context)
@@ -136,7 +143,7 @@ class _SendCodeState extends State<SendCode> {
                           ),
                         ),
                         Text(
-                          "was sent to your email address",
+                          S.of(context).OTP3,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context)
@@ -180,7 +187,7 @@ class _SendCodeState extends State<SendCode> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: text(
-                                        label: "Please enter all 6 digits of the OTP",
+                                        label: S.of(context).OTPValidation,
                                         fontSize: 14,
                                         color: Theme.of(context).colorScheme.onSurface,
                                       ),
@@ -199,8 +206,8 @@ class _SendCodeState extends State<SendCode> {
                                 color: Colors.white,
                               ),
                             )
-                                : const Text(
-                              "Verify and Proceed",
+                                : Text(
+                              S.of(context).verifyAnsProceed,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -220,5 +227,8 @@ class _SendCodeState extends State<SendCode> {
         },
       ),
     );
+  }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
   }
 }

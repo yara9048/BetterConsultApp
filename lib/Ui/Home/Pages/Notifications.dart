@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../../generated/l10n.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({super.key});
@@ -40,9 +43,9 @@ class _NotificationsState extends State<Notifications> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title:  Padding(
-          padding: const EdgeInsets.only(left: 45.0),
+          padding: EdgeInsets.only(left: isArabic() ? 0 :45.0, right: isArabic()?70: 0),
           child: Text(
-            'Notifications',
+            S.of(context).notifications,
             style: TextStyle(
               fontFamily: 'NotoSerifGeorgian',
               fontWeight: FontWeight.bold,
@@ -131,4 +134,8 @@ class _NotificationsState extends State<Notifications> {
         ),
     ));
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

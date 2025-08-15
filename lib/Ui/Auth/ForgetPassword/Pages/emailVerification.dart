@@ -1,6 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/Auth/VerifyEmailProvider.dart';
+import '../../../../generated/l10n.dart';
 import '../../Register/Compoenets/OtpField.dart';
 import '../../Register/Compoenets/text.dart';
 import 'ResetPassword.dart';
@@ -43,7 +47,7 @@ class _EmailVeriState extends State<EmailVeri> {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: text(
-                        label: "Wrong OTP",
+                        label: S.of(context).OTPFailed,
                         fontSize: 14,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -59,7 +63,7 @@ class _EmailVeriState extends State<EmailVeri> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: text(
-                      label: 'Email Verified Successfully',
+                      label: S.of(context).OTPSuccess,
                       fontSize: 14,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
@@ -80,31 +84,36 @@ class _EmailVeriState extends State<EmailVeri> {
             return SingleChildScrollView(
               child: Stack(
                 children: [
-                  Image.asset("assets/images/Untitled design (1).png"),
+                  Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),child: Image.asset("assets/images/Untitled design (1).png")),
                   Positioned(
                     top: 70,
-                    left: 30,
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            size: 25,
+                    left:  30,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: isArabic() ? 20 :0),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Theme.of(context).colorScheme.onSurface,
+                              size: 25,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 18),
-                        Text(
-                          "Email Verification",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontFamily: 'NotoSerifGeorgian',
+                          const SizedBox(width: 18),
+                          Text(
+                            S.of(context).emailVerification,
+                            style: TextStyle(
+                              fontSize: isArabic()?23: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontFamily: 'NotoSerifGeorgian',
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -112,7 +121,7 @@ class _EmailVeriState extends State<EmailVeri> {
                     child: Column(
                       children: [
                         Text(
-                          "Get your Code",
+                          S.of(context).OTP1,
                           style: TextStyle(
                             fontSize: 24,
                             color: Theme.of(context).colorScheme.primary,
@@ -121,7 +130,7 @@ class _EmailVeriState extends State<EmailVeri> {
                           ),
                         ),
                         Text(
-                          "Please enter your 6 digit code that",
+                          S.of(context).OTP2,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context)
@@ -133,7 +142,7 @@ class _EmailVeriState extends State<EmailVeri> {
                           ),
                         ),
                         Text(
-                          "was sent to your email address",
+                          S.of(context).OTP3,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context)
@@ -175,7 +184,7 @@ class _EmailVeriState extends State<EmailVeri> {
             ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(
               content: text(
-                label: "Please enter all 6 digits of the OTP",
+                label: S.of(context).OTPValidation,
                 fontSize: 14,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
@@ -194,8 +203,8 @@ class _EmailVeriState extends State<EmailVeri> {
                                 color: Colors.white,
                               ),
                             )
-                                : const Text(
-                              "Verify and Proceed",
+                                : Text(
+                              S.of(context).verifyAnsProceed,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -216,4 +225,8 @@ class _EmailVeriState extends State<EmailVeri> {
       ),
     );
   }
+  bool isArabic() {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

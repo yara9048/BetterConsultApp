@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../generated/l10n.dart';
 import '../../Login/pages/login.dart';
 import '../components/indicator.dart';
 import '../components/mainWidget.dart';
@@ -15,36 +17,36 @@ class _onboardingState extends State<onboarding> {
   bool isLast = false;
   List<Color> dotColor = [Color(0xffAAC9CE),Color(0xffB6B4C2),Color(0xffC9BBC8),Color(0xffF3DBCF),Color(0xffE5C1CD)];
 
-  final List<Map<String, String>> onboardingData = [
-    {
-      "image": "assets/images/undraw_questions_g2px.png",
-      "title": "Welcome to Better Consult",
-      "description": "Your trusted partner for smart and secure consultations.",
-    },
-    {
-      "image": "assets/images/undraw_chat-bot_c8iw (1).png",
-      "title": "Choose Your Expert",
-      "description": "Get personalized advice from professionals you select.",
-    },
-    {
-      "image": "assets/images/undraw_chat-with-ai_ir62.png",
-      "title": "Powered by AI",
-      "description": "AI-enhanced features for a smarter, faster experience.",
-    },
-    {
-      "image": "assets/images/undraw_selection_7hy6.png",
-      "title": "Wide Range of Categories",
-      "description": "Access consultations across health, finance, tech, and more.",
-    },
-    {
-      "image": "assets/images/undraw_security-on_btwg.png",
-      "title": "Your Privacy, Our Priority",
-      "description": "Advanced security ensures your data stays safe and confidential.",
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, String>> onboardingData = [
+      {
+        "image": "assets/images/undraw_questions_g2px.png",
+        "title": S.of(context).title1,
+        "description": S.of(context).description1,
+      },
+      {
+        "image": "assets/images/undraw_chat-bot_c8iw (1).png",
+        "title": S.of(context).title2,
+        "description": S.of(context).description2,
+      },
+      {
+        "image": "assets/images/undraw_chat-with-ai_ir62.png",
+        "title": S.of(context).title3,
+        "description": S.of(context).description3,
+      },
+      {
+        "image": "assets/images/undraw_selection_7hy6.png",
+        "title": S.of(context).title4,
+        "description": S.of(context).description4,
+      },
+      {
+        "image": "assets/images/undraw_security-on_btwg.png",
+        "title": S.of(context).title5,
+        "description": S.of(context).description5,
+      },
+    ];
     isLast = _currentPage == onboardingData.length - 1;
     return Scaffold(
       backgroundColor:Colors.white,
@@ -52,7 +54,7 @@ class _onboardingState extends State<onboarding> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 280, top: 20.0),
+              padding: EdgeInsets.only(left: isArabic()? 0 :280, top: 20.0, right: isArabic()?270:0),
               child: isLast
                   ? SizedBox(
                 width: 40,
@@ -62,7 +64,7 @@ class _onboardingState extends State<onboarding> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context){return Login();}));
                 },
-                child: Text("Skip",
+                child: Text(S.of(context).skip,
                   style: TextStyle(
                       fontSize: 20,
                       color: Theme.of(context).colorScheme.primary,
@@ -111,7 +113,7 @@ class _onboardingState extends State<onboarding> {
                       width: 120,
                       child: Center(
                         child: Text(
-                          "Start",
+                            S.of(context).start,
                           style: TextStyle(
                               fontSize: 20,
                               color: Theme.of(context).colorScheme.onSurface,
@@ -149,5 +151,8 @@ class _onboardingState extends State<onboarding> {
         ),
       ),
     );
+  }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
   }
 }

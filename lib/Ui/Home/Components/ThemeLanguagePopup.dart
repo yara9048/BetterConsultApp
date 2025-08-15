@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '_buildCompactDropdown.dart';
 
 class ThemeLanguageDialog extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Preferences",
+              S.of(context).preferences,
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.w700,
@@ -65,7 +66,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
 
             _buildCompactOptionRow(
               icon: Icons.brightness_6_rounded,
-              label: "Theme",
+              label: S.of(context).theme,
               iconColor: colorScheme.primary,
               trailing: Padding(
                 padding: const EdgeInsets.only(right: 30.0),
@@ -84,7 +85,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
 
             _buildCompactOptionRow(
               icon: Icons.language_rounded,
-              label: "Language",
+              label: S.of(context).language,
               iconColor: colorScheme.primary,
               trailing: SizedBox(
                 width: 120,
@@ -94,7 +95,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
                     DropdownMenuItem(
                       value: 'en',
                       child: Text(
-                        "English",
+                        S.of(context).english,
                         style: TextStyle(
                           color: colorScheme.primary,
                           fontFamily: 'NotoSerifGeorgian',
@@ -104,7 +105,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
                     DropdownMenuItem(
                       value: 'ar',
                       child: Text(
-                        "Arabic",
+                        S.of(context).english,
                         style: TextStyle(
                           color: colorScheme.primary,
                           fontFamily: 'NotoSerifGeorgian',
@@ -142,7 +143,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
                       ),
                     ),
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("CANCEL"),
+                    child:  Text(S.of(context).cancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -175,7 +176,7 @@ class _ThemeLanguageDialogState extends State<ThemeLanguageDialog> {
                       widget.onLanguageChanged(_tempSelectedLanguage);
                       Navigator.of(context).pop();
                     },
-                    child: const Text("APPLY"),
+                    child: Text(S.of(context).apply),
                   ),
                 ),
               ],

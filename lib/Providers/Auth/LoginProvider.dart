@@ -34,9 +34,13 @@ class LoginProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         String token = response.data['token'];
         final String? role = response.data['user']?['role']?.toString();
+        final String? name = response.data['user']?['first_name']?.toString();
+        print(name);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', token);
         await prefs.setString('user_role', role!);
+        await prefs.setString('user_name', name!);
+
 
         _isSuccess = true;
       } else if (response.statusCode == 401) {

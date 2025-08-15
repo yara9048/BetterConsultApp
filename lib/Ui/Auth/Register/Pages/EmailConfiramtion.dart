@@ -1,7 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/Auth/SendOtpProvider.dart';
+import '../../../../generated/l10n.dart';
 import '../../ForgetPassword/Pages/emailVerification.dart';
 import '../Compoenets/text.dart';
 import 'SendCode.dart';
@@ -34,7 +38,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: text(
-                    label: "OTP sent successfully! Check your email.",
+                    label: S.of(context).OTPSuccess,
                     fontSize: 14,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -48,8 +52,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                 ),
               );
             } else if (sendOtpProvider.errorMessage != null) {
-              // Clear error after showing
-              final error = sendOtpProvider.errorMessage!;
+              final error = S.of(context).OTPFailed;
               sendOtpProvider.reset();
 
               ScaffoldMessenger.of(context).showSnackBar(
@@ -70,8 +73,9 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
             body: SingleChildScrollView(
               child: Stack(
                 children: [
-                  Image(image: AssetImage("assets/images/Untitled design (1).png")),
-                  Positioned(
+                  Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),child: Image.asset("assets/images/Untitled design (1).png")),                  Positioned(
                     top: 70,
                     left: 30,
                     child: Row(
@@ -89,7 +93,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                         Padding(
                           padding: const EdgeInsets.only(left: 18.0),
                           child: Text(
-                            "Email Verification",
+                            S.of(context).emailVerification,
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
@@ -102,13 +106,13 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 250.0),
+                    padding: EdgeInsets.only(top: 250.0),
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 200.0),
+                          padding:  EdgeInsets.only(left: isArabic()? 0: 200.0,right:  isArabic()?200:0),
                           child: text(
-                            label: "Step 1 out of 3",
+                            label: S.of(context).step1,
                             fontSize: 14,
                             color: Theme.of(context).colorScheme.surface.withOpacity(0.4),
                           ),
@@ -116,7 +120,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                         Padding(
                           padding: const EdgeInsets.only(top: 50.0),
                           child: Text(
-                            "Email Verification",
+                            S.of(context).emailVerification,
                             style: TextStyle(
                               fontSize: 24,
                               color: Theme.of(context).colorScheme.primary,
@@ -126,7 +130,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                           ),
                         ),
                         Text(
-                          "In order to implement the registration ",
+                          S.of(context).confirmEmailReg1,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context).colorScheme.surface.withOpacity(0.4),
@@ -135,7 +139,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                           ),
                         ),
                         Text(
-                          "process, we need to verify your email",
+                          S.of(context).confirmEmailReg2,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context).colorScheme.surface.withOpacity(0.4),
@@ -175,7 +179,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                                   width: 2.0,
                                 ),
                               ),
-                              hintText: "Enter your email",
+                              hintText: S.of(context).emailHint,
                               hintStyle: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 18,
@@ -201,14 +205,14 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                             onPressed: () {
                               if (_emailController.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Please enter your email")),
+                                  SnackBar(content: Text(S.of(context).emailHint)),
                                 );
                                 return;
                               }
                               sendOtpProvider.sendOTP(_emailController.text);
                             },
-                            child: const Text(
-                              "Send Code",
+                            child: Text(
+                              S.of(context).sendCode,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -228,5 +232,8 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
         },
       ),
     );
+  }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../NavBarPages/Categories.dart';
 import '../NavBarPages/Favorite.dart';
 import '../NavBarPages/History.dart';
@@ -65,31 +66,31 @@ class _NavbarState extends State<Navbar> {
             fontFamily: 'NotoSerifGeorgian',
           ),
           unselectedLabelStyle: TextStyle(fontFamily: 'NotoSerifGeorgian'),
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
-              label: 'Home',
+              label: S.of(context).home,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite_outline),
               activeIcon: Icon(Icons.favorite),
-              label: 'Favorites',
+              label: S.of(context).favorite,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.category_outlined),
               activeIcon: Icon(Icons.category),
-              label: 'Categories',
+              label: S.of(context).categories,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
-              label: 'Profile',
+              label: S.of(context).profile,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history_outlined),
               activeIcon: Icon(Icons.history),
-              label: 'History',
+              label: S.of(context).history
             ),
           ],
         ),

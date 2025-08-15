@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
 import '../../DIO/DioHelper.dart';
 import '../../DIO/EndPoints.dart';
 
@@ -16,11 +17,11 @@ class SendOTPProvider with ChangeNotifier {
     _errorMessage = null;
     _isSuccess = false;
     notifyListeners();
-
-    String url = Endpoints.baseUrl + Endpoints.sendOTP;
+    print(Endpoints.baseUrl + Endpoints.sendOTP);
+    print(email);
     try {
       final response = await DioHelper.postData(
-        url: url,
+        url: Endpoints.baseUrl + Endpoints.sendOTP,
         data: {'email': email},
       );
 
@@ -31,6 +32,7 @@ class SendOTPProvider with ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = 'Failed: $e';
+      print(e);
     }
 
     _isLoading = false;

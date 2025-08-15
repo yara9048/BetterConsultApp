@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/Auth/logoutProvider.dart';
+import '../../../../generated/l10n.dart';
 import '../../../../main.dart';
 import '../../../Home/Components/InfoCard.dart';
 import '../../../Home/Components/ProfileItemRow.dart';
@@ -58,7 +60,7 @@ class _ProfileConsState extends State<ProfileCons> {
                 alignment: Alignment.center,
                 children: [
                   Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: isArabic() ? Alignment.centerRight : Alignment.centerLeft,
                     child: IconButton(
                       icon: const Icon(Icons.notifications_none),
                       color: Colors.white,
@@ -71,8 +73,8 @@ class _ProfileConsState extends State<ProfileCons> {
                       },
                     ),
                   ),
-                  const Text(
-                    'Profile',
+                   Text(
+                    S.of(context).profile,
                     style: TextStyle(
                       fontFamily: 'NotoSerifGeorgian',
                       fontWeight: FontWeight.bold,
@@ -81,7 +83,7 @@ class _ProfileConsState extends State<ProfileCons> {
                     ),
                   ),
                   Align(
-                    alignment: Alignment.centerRight,
+                    alignment: isArabic() ? Alignment.centerLeft : Alignment.centerRight,
                     child: logoutProvider.isLoading
                         ? Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -97,6 +99,8 @@ class _ProfileConsState extends State<ProfileCons> {
                         : IconButton(
                       onPressed: () => logoutProvider.logout(),
                       icon: Icon(
+                        isArabic()?
+                        Icons.login:
                         Icons.logout,
                         color: theme.colorScheme.onSurface,
                       ),
@@ -147,7 +151,7 @@ class _ProfileConsState extends State<ProfileCons> {
                   const SizedBox(height: 30),
 
                   // Personal Info
-                  const SectionHeader(label: 'Personal Information'),
+                   SectionHeader(label: S.of(context).personalInformation),
                   const SizedBox(height: 8),
                   const InfoCard(
                     children: [
@@ -162,7 +166,7 @@ class _ProfileConsState extends State<ProfileCons> {
                   const SizedBox(height: 24),
 
                   // Contact Details
-                  const SectionHeader(label: 'Contact Details'),
+                   SectionHeader(label: S.of(context).contactDetails),
                   const SizedBox(height: 8),
                   const InfoCard(
                     children: [
@@ -173,8 +177,7 @@ class _ProfileConsState extends State<ProfileCons> {
 
                   const SizedBox(height: 24),
 
-                  // Professional Info (NEW SECTION)
-                  const SectionHeader(label: 'Professional Information'),
+                   SectionHeader(label: S.of(context).professionalInformation),
                   const SizedBox(height: 8),
                   const InfoCard(
                     children: [
@@ -192,91 +195,6 @@ class _ProfileConsState extends State<ProfileCons> {
                     ],
                   ),
 
-                  const SizedBox(height: 24),
-
-                  // Preferences
-                  const SectionHeader(label: 'Preferences'),
-                  const SizedBox(height: 8),
-                  InfoCard(
-                    children: [
-                      // Theme Switch
-                      StatefulBuilder(
-                        builder: (context, setStateSB) {
-                          return ProfileItemRow(
-                            icon: isDarkMode
-                                ? Icons.dark_mode
-                                : Icons.light_mode,
-                            label: 'Themes',
-                            trailingWidget: Padding(
-                              padding: const EdgeInsets.only(left: 140.0),
-                              child: Switch.adaptive(
-                                value: isDarkMode,
-                                onChanged: (value) {
-                                  setStateSB(() {
-                                    isDarkMode = value;
-                                  });
-                                  MyApp.of(context).setTheme(value);
-                                },
-                                activeColor: theme.colorScheme.primary,
-                                activeTrackColor:
-                                theme.colorScheme.primary.withOpacity(0.5),
-                                inactiveThumbColor: theme.colorScheme.primary,
-                                inactiveTrackColor:
-                                theme.colorScheme.primary.withOpacity(0.3),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-
-                      // Language Selector
-                      StatefulBuilder(
-                        builder: (context, setStateSB) {
-                          return ProfileItemRow(
-                            icon: Icons.language,
-                            label: 'Language',
-                            trailingWidget: Padding(
-                              padding: const EdgeInsets.only(left: 60.0),
-                              child: SizedBox(
-                                width: 120,
-                                child: CompactDropdown(
-                                  value: currentLanguage,
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: 'en',
-                                      child: Text(
-                                        "English",
-                                        style: TextStyle(
-                                          color: theme.colorScheme.primary,
-                                          fontFamily: 'NotoSerifGeorgian',
-                                        ),
-                                      ),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'ar',
-                                      child: Text(
-                                        "Arabic",
-                                        style: TextStyle(
-                                          color: theme.colorScheme.primary,
-                                          fontFamily: 'NotoSerifGeorgian',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged: (val) {
-                                    if (val != null) {
-                                      setState(() => currentLanguage = val);
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
                   const SizedBox(height: 10),
                 ],
               ),
@@ -286,4 +204,8 @@ class _ProfileConsState extends State<ProfileCons> {
       ),
     );
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

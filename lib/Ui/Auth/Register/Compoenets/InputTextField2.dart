@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../generated/l10n.dart';
 import 'text.dart';
 
 class InputTextField2 extends StatefulWidget {
@@ -64,7 +65,7 @@ class _InputTextField2State extends State<InputTextField2> {
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
             ),
-            hintText: "Enter ${widget.label.toLowerCase()}",
+            hintText: S.of(context).enter + widget.label.toLowerCase() ,
             hintStyle: TextStyle(
               color: colorScheme.primary,
               fontSize: 14,

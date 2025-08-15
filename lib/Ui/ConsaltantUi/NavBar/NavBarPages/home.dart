@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../generated/l10n.dart';
 import '../../../../main.dart';
 import '../../../Home/Components/ChatHistoryCard.dart';
 import '../../../Home/Components/SettingNotificationsWidget.dart';
@@ -27,7 +28,7 @@ class _HomeConsState extends State<HomeCons> {
                const SizedBox(width: 12),
                Expanded(
                  child: Text(
-                   'Welcome, Consultant',
+                   '${S.of(context).welcome} Consultant',
                    style: TextStyle(
                      fontSize: 30,
                      fontWeight: FontWeight.w600,
@@ -38,12 +39,12 @@ class _HomeConsState extends State<HomeCons> {
                ),
                Row(
                  children: [
-                   SettingNotificationsWidget(title: 'Notification', icon: Icons.notifications_none, onTap: () async {
+                   SettingNotificationsWidget(title: S.of(context).notifications, icon: Icons.notifications_none, onTap: () async {
                      Navigator.push(context, MaterialPageRoute(builder: (context) {return Notifications();}));
                    },
                    ),
                    SizedBox(width: 10),
-                   SettingNotificationsWidget(title: 'Settings', icon: Icons.settings, onTap: () { _showThemeLanguageDialog(); },)
+                   SettingNotificationsWidget(title: S.of(context).settings, icon: Icons.settings, onTap: () { _showThemeLanguageDialog(); },)
                  ],
                ),
 
@@ -51,7 +52,7 @@ class _HomeConsState extends State<HomeCons> {
            ),
            const SizedBox(height: 4),
            Text(
-             'Let’s display some of the consultant that has been implemented ',
+             S.of(context).welcomeCons,
              style: TextStyle(
                  fontSize: 16,
                  color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.9),

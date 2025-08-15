@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
 import 'ChatPage.dart';
 
 class ConsultantDetails extends StatefulWidget {
@@ -19,11 +21,11 @@ class _ConsultantDetailsState extends State<ConsultantDetails> {
       appBar: AppBar(
         backgroundColor: theme.primary,
         elevation: 0,
-        title: const Center(
+        title: Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 50.0),
+            padding: EdgeInsets.only(right: isArabic()? 0:50.0,left: isArabic()?50:0),
             child: Text(
-              'Consultant Details',
+              S.of(context).consultantDetails,
               style: TextStyle(
                 fontFamily: 'NotoSerifGeorgian',
                 fontWeight: FontWeight.bold,
@@ -124,7 +126,7 @@ class _ConsultantDetailsState extends State<ConsultantDetails> {
             ),
             const SizedBox(height: 22),
             Text(
-              "About me",
+              S.of(context).aboutMe,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -170,8 +172,7 @@ class _ConsultantDetailsState extends State<ConsultantDetails> {
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context){return ChatPage();}));
           },
-          child: const Text(
-            'Chat with me',
+          child:  Text(S.of(context).chatWithMe,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -182,6 +183,9 @@ class _ConsultantDetailsState extends State<ConsultantDetails> {
         ),
       ),
     );
+  }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
   }
 
 }

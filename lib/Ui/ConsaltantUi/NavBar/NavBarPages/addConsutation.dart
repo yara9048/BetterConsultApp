@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../../../generated/l10n.dart';
 import '../../../Auth/Register/Compoenets/text.dart';
 import '../Component/InputCard.dart';
 import '../Component/OptionCard.dart';
@@ -27,9 +28,9 @@ class _AddConsultationState extends State<AddConsultation> {
   Future<void> pickFile(String type) async {
     FileType fileType = FileType.custom;
 
-    if (type == "video") {
+    if (type == S.of(context).video) {
       fileType = FileType.video;
-    } else if (type == "voice") {
+    } else if (type == S.of(context).voice) {
       fileType = FileType.audio;
     }
 
@@ -42,9 +43,9 @@ class _AddConsultationState extends State<AddConsultation> {
       String extension = path.split('.').last.toLowerCase();
 
       bool isValid = false;
-      if (type == "video") {
+      if (type == S.of(context).video) {
         isValid = ['mp4', 'mov', 'avi', 'mkv'].contains(extension);
-      } else if (type == "voice") {
+      } else if (type ==S.of(context).voice) {
         isValid = ['mp3', 'wav', 'aac', 'm4a'].contains(extension);
       }
 
@@ -52,7 +53,7 @@ class _AddConsultationState extends State<AddConsultation> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: text(
-              label: "Invalid file type. Please upload a $type file.",
+              label: S.of(context).uploadValidationInvalid + type,
               fontSize: 14,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -70,7 +71,7 @@ class _AddConsultationState extends State<AddConsultation> {
         SnackBar(
           content: text(
             label:
-            "${type[0].toUpperCase()}${type.substring(1)} uploaded successfully!",
+            type[0].toUpperCase() + type.substring(1) + S.of(context).uploadValidationSuccess,
             fontSize: 14,
             color: Theme.of(context).colorScheme.onSurface,
           ),
@@ -81,7 +82,7 @@ class _AddConsultationState extends State<AddConsultation> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: text(
-            label: "No file selected.",
+            label: S.of(context).uploadValidationNoneSelected,
             fontSize: 14,
             color: Theme.of(context).colorScheme.onSurface,
           ),
@@ -97,8 +98,8 @@ class _AddConsultationState extends State<AddConsultation> {
     return Scaffold(
       backgroundColor: colorScheme.background,
       appBar: AppBar(
-        title: const Text(
-          "Add a Consultation",
+        title:  Text(
+          S.of(context).addConsultant,
           style: TextStyle(
             fontFamily: 'NotoSerifGeorgian',
             fontWeight: FontWeight.bold,
@@ -114,7 +115,7 @@ class _AddConsultationState extends State<AddConsultation> {
             padding: const EdgeInsets.only(bottom: 10, left: 4, right: 4),
             child: Center(
               child: Text(
-                "Choose the consultation type then uploaded it ",
+                S.of(context).addConsultant1,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -136,29 +137,29 @@ class _AddConsultationState extends State<AddConsultation> {
               Row(
                 children: [
                   ConsultationOptionCard(
-                    label: "Video",
+                    label: S.of(context).video,
                     icon: Icons.videocam,
-                    value: "video",
-                    isSelected: selectedOption == "video",
-                    onTap: () => _selectOption("video"),
+                    value: S.of(context).video,
+                    isSelected: selectedOption == S.of(context).video,
+                    onTap: () => _selectOption(S.of(context).video),
                     colorScheme: colorScheme,
                   ),
                   const SizedBox(width: 12),
                   ConsultationOptionCard(
-                    label: "Voice",
+                    label: S.of(context).voice,
                     icon: Icons.mic,
-                    value: "voice",
-                    isSelected: selectedOption == "voice",
-                    onTap: () => _selectOption("voice"),
+                    value:S.of(context).voice,
+                    isSelected: selectedOption == S.of(context).voice,
+                    onTap: () => _selectOption(S.of(context).voice),
                     colorScheme: colorScheme,
                   ),
                   const SizedBox(width: 12),
                   ConsultationOptionCard(
-                    label: "Text",
+                    label: S.of(context).text,
                     icon: Icons.text_snippet,
-                    value: "text",
-                    isSelected: selectedOption == "text",
-                    onTap: () => _selectOption("text"),
+                    value: S.of(context).text,
+                    isSelected: selectedOption ==S.of(context).text,
+                    onTap: () => _selectOption(S.of(context).text),
                     colorScheme: colorScheme,
                   ),
                 ],

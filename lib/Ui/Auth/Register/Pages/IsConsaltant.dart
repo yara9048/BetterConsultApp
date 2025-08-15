@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../../../generated/l10n.dart';
 import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import '../Compoenets/InputTextField2.dart';
 import '../Compoenets/SectionSentence.dart';
@@ -58,8 +59,8 @@ class _IsconsaltantState extends State<Isconsaltant> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "Consultant Registration",
+        title: Text(
+          S.of(context).consultantRegistration,
           style: TextStyle(
             fontFamily: 'NotoSerifGeorgian',
             fontWeight: FontWeight.bold,
@@ -74,7 +75,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Text(
-              "Let’s build your professional profile as a Consultant",
+              S.of(context).consultantRegistration1,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
@@ -93,53 +94,40 @@ class _IsconsaltantState extends State<Isconsaltant> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SectionTitle(label: "Industry Information"),
+                SectionTitle(label: S.of(context).IndustryInformation),
                 InputTextField2(
-                  label: "Field / Industry",
+                  label: S.of(context).field,
                   controller: _fieldController,
                   icon: Icons.business_center_outlined,
                 ),
                 InputTextField2(
-                  label: "Specialization",
+                  label: S.of(context).specialization,
                   controller: _specializationController,
                   icon: Icons.school_outlined,
                 ),
                 InputTextField2(
-                  label: "Years of Experience",
+                  label: S.of(context).years,
                   controller: _experienceController,
                   icon: Icons.timer_outlined,
                   keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return "Required";
-                    if (int.tryParse(value) == null) return "Enter a number";
-                    return null;
-                  },
                 ),
 
-                SectionTitle(label: "Online Presence"),
+                SectionTitle(label: S.of(context).presence),
                 InputTextField2(
-                  label: "Business Location",
+                  label: S.of(context).location,
                   controller: _websiteController,
                   icon: Icons.location_on_outlined,
-                  validator: (value) {
-                    if (value != null &&
-                        value.isNotEmpty &&
-                        !value.startsWith("http")) {
-                      return "Should start with http/https";
-                    }
-                    return null;
-                  },
                 ),
 
-                SectionTitle(label: "About You"),
+                SectionTitle(label: S.of(context).about),
                 InputTextField2(
-                  label: "Your Bio",
+                  label: S.of(context).bio,
                   controller: _bioController,
                   maxLength: 250,
                   icon: Icons.edit_note_outlined,
                 ),
                 InputTextField2(
-                  label: "Spoken Languages",
+                  label: S.of(context).languages,
                   controller: _lanController,
                   icon: Icons.language,
                 ),
@@ -148,7 +136,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SectionTitle(label: "Upload Files"),
+                    SectionTitle(label: S.of(context).files),
 
                     Container(
                       width: 70, // control width
@@ -156,8 +144,8 @@ class _IsconsaltantState extends State<Isconsaltant> {
                       child: ElevatedButton.icon(
                         onPressed: _pickFiles,
                         icon: const Icon(Icons.add, size: 14),
-                        label: const Text(
-                          "Add",
+                        label: Text(
+                          S.of(context).add,
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold,fontFamily: 'NotoSerifGeorgian'
                           ),
                         ),
@@ -165,7 +153,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
                           backgroundColor: Theme.of(context).colorScheme.primary,
                           foregroundColor: Colors.white,
                           elevation: 1,
-                          padding: EdgeInsets.zero, // remove internal padding so container controls size
+                          padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
                           ),
@@ -175,7 +163,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
                   ],
                 ),
             Text(
-              "Attach supporting documents that prove your expertise and consultancy credentials.",
+              S.of(context).files1,
               style: TextStyle(color: Theme.of(context).colorScheme.surface.withOpacity(0.4),fontFamily: 'NotoSerifGeorgian'
               ),),
                 SizedBox(height: 10,),
@@ -190,7 +178,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
                   child: _uploadedFiles.isEmpty
                       ?  Center(
                     child: Text(
-                      "No files uploaded yet",
+                      S.of(context).addError,
                       style: TextStyle(color: Theme.of(context).colorScheme.surface.withOpacity(0.4),fontFamily: 'NotoSerifGeorgian'
                       ),
                     ),
@@ -285,8 +273,8 @@ class _IsconsaltantState extends State<Isconsaltant> {
                         elevation: 3,
                       ),
                       onPressed:(){Navigator.push(context, MaterialPageRoute(builder: (context){return consultNavBar();}));},
-                      child: const Text(
-                        "Submit",
+                      child: Text(
+                        S.of(context).submit,
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,

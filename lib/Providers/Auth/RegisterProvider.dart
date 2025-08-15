@@ -25,7 +25,6 @@ class RegisterProvider with ChangeNotifier {
     _errorMessage = null;
     _isSuccess = false;
     notifyListeners();
-
     String url = Endpoints.baseUrl + Endpoints.register;
     print(url);
     print(email);
@@ -35,12 +34,11 @@ class RegisterProvider with ChangeNotifier {
     print(firstName);
     print(phoneNumber);
     print(lastName);
-
     try {
       final response = await DioHelper.postData(
         url: url,
         data: {
-          'email': 'moonyzrare096@gmail.com',
+          'email': email,
           'password': password,
           'gender': gender,
           'role': role,
@@ -55,10 +53,13 @@ class RegisterProvider with ChangeNotifier {
         if (token != null) {
           String token = response.data['token'];
           final String? role = response.data['user']?['role']?.toString();
+          final String? name = response.data['user']?['first_name']?.toString();
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', token);
           await prefs.setString('user_role', role!);
+          await prefs.setString('user_name', name!);
           print('Token saved: $token');
+          print(response);
         }
         _isSuccess = true;
         _isSuccess = true;

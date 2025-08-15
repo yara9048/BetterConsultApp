@@ -1,5 +1,7 @@
+import 'package:intl/intl.dart';
+
 class Endpoints {
-  static const String baseUrl = 'http://192.168.15.131:8000/api/';
+  static const String baseUrl = 'http://192.168.1.2:8000/api/';
   static const String login = 'auth/login/';
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';

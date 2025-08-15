@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
 import '../Components/ChatBubble.dart';
 
 class ChatPage extends StatefulWidget {
@@ -51,9 +53,9 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title:  Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 50.0),
+            padding: EdgeInsets.only(right: isArabic()? 0:50.0,left: isArabic()?50:0),
             child: Text(
-              'Chat with Consultant',
+              S.of(context).chatWithConsultant,
               style: TextStyle(
                 fontFamily: 'NotoSerifGeorgian',
                 fontWeight: FontWeight.bold,
@@ -100,7 +102,7 @@ class _ChatPageState extends State<ChatPage> {
                 fontWeight: FontWeight.bold,
               ),
               decoration: InputDecoration(
-                hintText: 'Type your message..',
+                hintText: S.of(context).chatHint,
                 hintStyle: TextStyle(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                   fontSize: 15,
@@ -133,4 +135,8 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

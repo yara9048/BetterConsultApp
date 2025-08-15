@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../generated/l10n.dart';
 import '../../../Auth/Register/Compoenets/text.dart';
 import 'FileWidget.dart';
 import 'UploadButton.dart';
@@ -42,11 +43,11 @@ class ConsultationInputWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    selectedOption == 'video'
-                        ? "Upload your video"
-                        : selectedOption == 'voice'
-                        ? "Upload your voice recording"
-                        : "Write your consultation text",
+                    selectedOption == S.of(context).video
+                        ? S.of(context).uploadYourVideo
+                        : selectedOption == S.of(context).voice
+                        ? S.of(context).uploadYourVoice
+                        : S.of(context).uploadYourTextHint,
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'NotoSerifGeorgian',
@@ -55,20 +56,20 @@ class ConsultationInputWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  if (selectedOption == 'video')
+                  if (selectedOption == S.of(context).video)
                     UploadButton(
                       icon: Icons.videocam,
-                      label: "Upload Video",
+                      label: S.of(context).uploadVideo,
                       type: "video",
-                      onPressed: () => onFileUpload("video"),
+                      onPressed: () => onFileUpload(S.of(context).video),
                       colorScheme: colorScheme,
                     )
-                  else if (selectedOption == 'voice')
+                  else if (selectedOption == S.of(context).voice)
                     UploadButton(
                       icon: Icons.mic,
-                      label: "Upload Audio",
+                      label: S.of(context).uploadVoice,
                       type: "voice",
-                      onPressed: () => onFileUpload("voice"),
+                      onPressed: () => onFileUpload(S.of(context).voice),
                       colorScheme: colorScheme,
                     )
                   else
@@ -82,7 +83,7 @@ class ConsultationInputWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       decoration: InputDecoration(
-                        hintText: "Type your consultation here...",
+                        hintText: S.of(context).uploadYourTextHint,
                         hintStyle: TextStyle(
                           fontSize: 14,
                           color: colorScheme.primary,
@@ -106,7 +107,7 @@ class ConsultationInputWidget extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(height: 12),
-                  if (selectedOption != 'text')
+                  if (selectedOption != S.of(context).text)
                     FileDisplayWidget(
                       uploadedFiles: uploadedFiles,
                       onDelete: onFileDelete,
@@ -130,12 +131,12 @@ class ConsultationInputWidget extends StatelessWidget {
               elevation: 5,
             ),
             onPressed: () {
-              if (selectedOption == 'text' &&
+              if (selectedOption == S.of(context).text &&
                   (consultationText == null || consultationText!.isEmpty)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: text(
-                      label: "Please enter your text consultation",
+                      label: S.of(context).uploadYourTextHint,
                       fontSize: 14,
                       color: colorScheme.onSurface,
                     ),
@@ -144,12 +145,12 @@ class ConsultationInputWidget extends StatelessWidget {
                 );
                 return;
               }
-              if ((selectedOption == 'video' || selectedOption == 'voice') &&
+              if ((selectedOption == S.of(context).video|| selectedOption == S.of(context).voice) &&
                   uploadedFiles.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: text(
-                      label: 'Please upload a ${selectedOption!} file.',
+                      label: "${S.of(context).pleaseUpload} ${selectedOption!}",
                       fontSize: 14,
                       color: colorScheme.onSurface,
                     ),
@@ -159,17 +160,17 @@ class ConsultationInputWidget extends StatelessWidget {
                 return;
               }
 
-              print("Confirmed! Option: $selectedOption");
-              if (selectedOption == 'text') {
-                print("Text: $consultationText");
+              print(S.of(context).confirmedOption + selectedOption!);
+              if (selectedOption == S.of(context).text) {
+                print(S.of(context).text + consultationText!);
               } else {
-                print("Files: $uploadedFiles");
+                print(uploadedFiles);
               }
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: text(
-                    label: "Consultation submitted successfully!",
+                    label: S.of(context).consultationDone,
                     fontSize: 14,
                     color: colorScheme.onSurface,
                   ),
@@ -178,7 +179,7 @@ class ConsultationInputWidget extends StatelessWidget {
               );
             },
             child: Text(
-              "Confirm",
+              S.of(context).confirm,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

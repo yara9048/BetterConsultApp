@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../generated/l10n.dart';
 import '../Components/ChatHistoryCard.dart';
 
 class History extends StatefulWidget {
@@ -17,8 +18,8 @@ class _HistoryState extends State<History> {
       backgroundColor: const Color(0xfff5f7fa),
       appBar: AppBar(
         backgroundColor: theme.colorScheme.primary,
-        title: const Text(
-          'Chat History',
+        title: Text(
+          S.of(context).chatHistory,
           style: TextStyle(
             fontFamily: 'NotoSerifGeorgian',
             fontWeight: FontWeight.bold,

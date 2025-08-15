@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../DIO/EndPoints.dart';
 import '../../../../Providers/Auth/RegisterProvider.dart';
+import '../../../../generated/l10n.dart';
 import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import '../../../Home/Pages/NavBar.dart';
 import '../Compoenets/text.dart';
@@ -30,18 +33,9 @@ class _RegisterState extends State<Register> {
   bool _obscureConfirmPassword = true;
   bool _isConsultant = false;
 
+  // Gender selection (default: male)
   final List<bool> _selectedGender = [true, false];
-  final List<String> _genderOptions = ['Male', 'Female'];
   final _scrollController = ScrollController();
-
-  String getSelectedGender() {
-    for (int i = 0; i < _selectedGender.length; i++) {
-      if (_selectedGender[i]) {
-        return _genderOptions[i].toLowerCase();
-      }
-    }
-    return '';
-  }
 
   InputDecoration _buildInputDecoration({
     required String hintText,
@@ -83,17 +77,35 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    // Localized gender options
+    final List<String> _genderOptions = [
+      S.of(context).male,
+      S.of(context).female,
+    ];
+
+    // Function to return backend-friendly gender string
+    String getSelectedGender() {
+      for (int i = 0; i < _selectedGender.length; i++) {
+        if (_selectedGender[i]) {
+          if (_genderOptions[i] == S.of(context).male) {
+            return 'male';
+          } else if (_genderOptions[i] == S.of(context).female) {
+            return 'female';
+          }
+        }
+      }
+      return '';
+    }
+
     return ChangeNotifierProvider(
       create: (_) => RegisterProvider(),
       child: Consumer<RegisterProvider>(
         builder: (context, provider, _) {
           if (provider.isSuccess) {
-            // Reset provider state before navigating
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               provider.reset();
               final prefs = await SharedPreferences.getInstance();
               final role = prefs.getString('user_role');
-              print("User role is: $role");
               if (role == "user") {
                 Navigator.pushReplacement(
                   context,
@@ -134,9 +146,9 @@ class _RegisterState extends State<Register> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 180.0),
+                                padding: EdgeInsets.only(left: isArabic()? 0:  180.0, right: isArabic()?180:0),
                                 child: text(
-                                  label: "Step 3 out of 3",
+                                  label: S.of(context).step3,
                                   fontSize: 14,
                                   color: colorScheme.surface.withOpacity(0.4),
                                 ),
@@ -145,18 +157,18 @@ class _RegisterState extends State<Register> {
                           ),
                           const SizedBox(height: 20),
                           text(
-                            label: "Welcome!",
+                            label: S.of(context).register1,
                             fontSize: 28,
                             color: colorScheme.surface.withOpacity(0.6),
                           ),
                           const SizedBox(height: 5),
                           text(
-                            label: "Your email has verified successfully",
+                            label: S.of(context).register2,
                             fontSize: 16,
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
                           text(
-                            label: "Please enter your personal information",
+                            label: S.of(context).register3,
                             fontSize: 16,
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
@@ -165,7 +177,7 @@ class _RegisterState extends State<Register> {
                     ),
                     const SizedBox(height: 40),
 
-                    // First Name & Last Name
+                    // First & Last Name
                     Row(
                       children: [
                         Expanded(
@@ -173,7 +185,7 @@ class _RegisterState extends State<Register> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               text(
-                                label: "First name",
+                                label: S.of(context).firstName,
                                 fontSize: 16,
                                 color: colorScheme.surface.withOpacity(0.4),
                               ),
@@ -182,7 +194,7 @@ class _RegisterState extends State<Register> {
                                 controller: _firstNameController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your first name';
+                                    return S.of(context).firstNameValidator;
                                   }
                                   return null;
                                 },
@@ -190,7 +202,7 @@ class _RegisterState extends State<Register> {
                                   color: colorScheme.surface.withOpacity(0.4),
                                 ),
                                 decoration: _buildInputDecoration(
-                                  hintText: "First name",
+                                  hintText: S.of(context).firstNameHint,
                                   colorScheme: colorScheme,
                                 ),
                               ),
@@ -203,7 +215,7 @@ class _RegisterState extends State<Register> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               text(
-                                label: "Last name",
+                                label: S.of(context).secondName,
                                 fontSize: 16,
                                 color: colorScheme.surface.withOpacity(0.4),
                               ),
@@ -212,7 +224,7 @@ class _RegisterState extends State<Register> {
                                 controller: _lastNameController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your last name';
+                                    return S.of(context).secondNameValidator;
                                   }
                                   return null;
                                 },
@@ -220,7 +232,7 @@ class _RegisterState extends State<Register> {
                                   color: colorScheme.surface.withOpacity(0.4),
                                 ),
                                 decoration: _buildInputDecoration(
-                                  hintText: "Last name",
+                                  hintText: S.of(context).secondNameHint,
                                   colorScheme: colorScheme,
                                 ),
                               ),
@@ -237,7 +249,7 @@ class _RegisterState extends State<Register> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         text(
-                          label: "Phone Number",
+                          label: S.of(context).phoneNumber,
                           fontSize: 16,
                           color: colorScheme.surface.withOpacity(0.4),
                         ),
@@ -247,11 +259,11 @@ class _RegisterState extends State<Register> {
                           keyboardType: TextInputType.phone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your phone number';
+                              return S.of(context).phoneNumberValidator;
                             }
                             if (value.length != 10 ||
                                 !RegExp(r'^\d{10}$').hasMatch(value)) {
-                              return 'Phone number must be exactly 10 digits';
+                              return S.of(context).passwordValidation1;
                             }
                             return null;
                           },
@@ -259,7 +271,7 @@ class _RegisterState extends State<Register> {
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
                           decoration: _buildInputDecoration(
-                            hintText: "Enter your phone number",
+                            hintText: S.of(context).phoneNumberHint,
                             colorScheme: colorScheme,
                           ),
                         ),
@@ -268,9 +280,9 @@ class _RegisterState extends State<Register> {
 
                     const SizedBox(height: 20),
 
-                    // Gender selection
+                    // Gender Picker
                     text(
-                      label: "Gender",
+                      label: S.of(context).gender,
                       fontSize: 16,
                       color: colorScheme.surface.withOpacity(0.4),
                     ),
@@ -286,9 +298,7 @@ class _RegisterState extends State<Register> {
                           });
                         },
                         borderRadius: BorderRadius.circular(10),
-
                         borderColor: colorScheme.primary,
-
                         selectedBorderColor: colorScheme.primary,
                         borderWidth: 2,
                         selectedColor: Colors.white,
@@ -301,14 +311,14 @@ class _RegisterState extends State<Register> {
                         children: _genderOptions
                             .map(
                               (gender) => Text(
-                                gender,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSerifGeorgian',
-                                ),
-                              ),
-                            )
+                            gender,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSerifGeorgian',
+                            ),
+                          ),
+                        )
                             .toList(),
                       ),
                     ),
@@ -320,7 +330,7 @@ class _RegisterState extends State<Register> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         text(
-                          label: "Password",
+                          label: S.of(context).password,
                           fontSize: 16,
                           color: colorScheme.surface.withOpacity(0.4),
                         ),
@@ -330,35 +340,31 @@ class _RegisterState extends State<Register> {
                           obscureText: _obscurePassword,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return S.of(context).passwordValidation1;
                             }
                             return null;
                           },
                           style: TextStyle(
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
-                          decoration:
-                              _buildInputDecoration(
-                                hintText: "Enter your password",
-                                colorScheme: colorScheme,
-                              ).copyWith(
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: colorScheme.primary,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
+                          decoration: _buildInputDecoration(
+                            hintText: S.of(context).passwordHint,
+                            colorScheme: colorScheme,
+                          ).copyWith(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: colorScheme.primary,
                               ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -370,7 +376,7 @@ class _RegisterState extends State<Register> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         text(
-                          label: "Confirm Password",
+                          label: S.of(context).confirmpassword,
                           fontSize: 16,
                           color: colorScheme.surface.withOpacity(0.4),
                         ),
@@ -380,42 +386,42 @@ class _RegisterState extends State<Register> {
                           obscureText: _obscureConfirmPassword,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
+                              return S.of(context).confirmPasswordValidation1;
                             }
                             if (value != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return S.of(context).confirmPasswordValidation2;
                             }
                             return null;
                           },
                           style: TextStyle(
                             color: colorScheme.surface.withOpacity(0.4),
                           ),
-                          decoration:
-                              _buildInputDecoration(
-                                hintText: "Confirm your password",
-                                colorScheme: colorScheme,
-                              ).copyWith(
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscureConfirmPassword
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: colorScheme.primary,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscureConfirmPassword =
-                                          !_obscureConfirmPassword;
-                                    });
-                                  },
-                                ),
+                          decoration: _buildInputDecoration(
+                            hintText: S.of(context).confirmPasswordHint,
+                            colorScheme: colorScheme,
+                          ).copyWith(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureConfirmPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: colorScheme.primary,
                               ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureConfirmPassword =
+                                  !_obscureConfirmPassword;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ],
                     ),
 
                     const SizedBox(height: 30),
 
+                    // Consultant Checkbox
                     Row(
                       children: [
                         Transform.scale(
@@ -428,15 +434,13 @@ class _RegisterState extends State<Register> {
                               });
                             },
                             activeColor: colorScheme.primary,
-                            checkColor:
-                                colorScheme.onSurface, // checkmark color here
+                            checkColor: colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: text(
-                            label:
-                                "Join us as Consultant",
+                            label: S.of(context).consultantJoin,
                             fontSize: 14,
                             color: colorScheme.surface.withOpacity(0.5),
                           ),
@@ -446,6 +450,7 @@ class _RegisterState extends State<Register> {
 
                     const SizedBox(height: 30),
 
+                    // Register Button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 55),
@@ -476,10 +481,10 @@ class _RegisterState extends State<Register> {
                       child: provider.isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : text(
-                              label: "Register",
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
+                        label: S.of(context).register,
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 40),
                   ],
@@ -490,5 +495,8 @@ class _RegisterState extends State<Register> {
         },
       ),
     );
+  }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
   }
 }

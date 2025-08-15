@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../../generated/l10n.dart';
 import '../Components/AllConsultantCard.dart';
 import 'ConsultantDetails.dart';
 import 'GeneralChat.dart';
@@ -76,11 +78,11 @@ class _AllConsultantState extends State<AllConsultant> {
       backgroundColor: const Color(0xfff5f7fa),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Center(
+        title: Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 50.0),
+            padding: EdgeInsets.only(right: isArabic()? 0:50.0,left: isArabic()?50:0),
             child: Text(
-              'All Consultant',
+              S.of(context).allConsultant,
               style: TextStyle(
                 fontFamily: 'NotoSerifGeorgian',
                 fontWeight: FontWeight.bold,
@@ -186,14 +188,14 @@ class _AllConsultantState extends State<AllConsultant> {
                 fontFamily: 'NotoSerifGeorgian',
               ),
               children: [
-                const TextSpan(
-                  text: 'Need help finding the right consultant? ',
+                 TextSpan(
+                  text: S.of(context).generalChat1,
                 ),
-                const TextSpan(
-                  text: 'Our team is available to assist you — ',
+                 TextSpan(
+                  text: S.of(context).generalChat2,
                 ),
                 TextSpan(
-                  text: 'start a chat',
+                  text: S.of(context).generalChat3,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.secondary,
@@ -203,8 +205,8 @@ class _AllConsultantState extends State<AllConsultant> {
                       Navigator.push(context, MaterialPageRoute(builder: (context){return Generalchat();}));
                     },
                 ),
-                const TextSpan(
-                  text: ' for personalized recommendations.',
+                 TextSpan(
+                  text: S.of(context).generalChat4,
                 ),
               ],
             ),
@@ -214,4 +216,8 @@ class _AllConsultantState extends State<AllConsultant> {
       ,
     );
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

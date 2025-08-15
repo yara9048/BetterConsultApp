@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../generated/l10n.dart';
 import '../../../main.dart';
 import '../Components/SettingNotificationsWidget.dart';
 import '../Components/ThemeLanguagePopup.dart';
@@ -27,14 +28,21 @@ class _HomeState extends State<Home> {
   String searchQuery = '';
   TextEditingController searchController = TextEditingController();
 
+  String? name; // Now nullable
 
   @override
   void initState() {
     super.initState();
     selectedCategory = categoryCards.keys.first;
+    _loadName();
   }
 
-
+  Future<void> _loadName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('user_name') ?? '';
+    });
+  }
 
   List<String> get filteredCards {
     return categoryCards[selectedCategory] ?? [];
@@ -43,7 +51,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
@@ -58,7 +65,7 @@ class _HomeState extends State<Home> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Welcome, Name',
+                      "${S.of(context).welcome}\n $name",
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w600,
@@ -69,28 +76,41 @@ class _HomeState extends State<Home> {
                   ),
                   Row(
                     children: [
-                      SettingNotificationsWidget(title: 'Notification', icon: Icons.notifications_none, onTap: () async { 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {return Notifications();}));
-                      },
+                      SettingNotificationsWidget(
+                        title: S.of(context).notifications,
+                        icon: Icons.notifications_none,
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                                return Notifications();
+                              }));
+                        },
                       ),
-                      SizedBox(width: 10),
-                    SettingNotificationsWidget(title: 'Settings', icon: Icons.settings, onTap: () { _showThemeLanguageDialog(); },)
+                      const SizedBox(width: 10),
+                      SettingNotificationsWidget(
+                        title: S.of(context).settings,
+                        icon: Icons.settings,
+                        onTap: () {
+                          _showThemeLanguageDialog();
+                        },
+                      )
                     ],
                   ),
-
                 ],
               ),
               const SizedBox(height: 4),
               Text(
-                'Let’s find the consultation you need',
+                S.of(context).welcome1,
                 style: TextStyle(
-                    fontSize: 16,
-                    color: colors.onPrimary.withOpacity(0.9),
-                    fontFamily: 'NotoSerifGeorgian',
-                    fontWeight: FontWeight.bold),
+                  fontSize: 16,
+                  color: colors.onPrimary.withOpacity(0.9),
+                  fontFamily: 'NotoSerifGeorgian',
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 20),
 
+              // Search bar
               Container(
                 decoration: BoxDecoration(
                   color: colors.onSurface,
@@ -103,11 +123,11 @@ class _HomeState extends State<Home> {
                     ),
                   ],
                 ),
-                child:TextField(
+                child: TextField(
                   controller: searchController,
                   onChanged: (value) => setState(() => searchQuery = value),
                   decoration: InputDecoration(
-                    hintText: 'Search for your desired consultant',
+                    hintText: S.of(context).searchHint,
                     hintStyle: TextStyle(
                       color: colors.onPrimary.withOpacity(0.7),
                       fontFamily: 'NotoSerifGeorgian',
@@ -126,7 +146,6 @@ class _HomeState extends State<Home> {
                         : null,
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
-
                     filled: true,
                     fillColor: colors.onSurface.withOpacity(0.05),
                   ),
@@ -135,17 +154,19 @@ class _HomeState extends State<Home> {
                     fontFamily: 'NotoSerifGeorgian',
                   ),
                   cursorColor: colors.primary,
-                )
+                ),
               ),
               const SizedBox(height: 24),
 
-              Divider(color: colors.onPrimary,thickness: 1,),
+              Divider(color: colors.onPrimary, thickness: 1),
               const SizedBox(height: 12),
+
+              // Categories header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Categories',
+                    S.of(context).categories,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -155,14 +176,15 @@ class _HomeState extends State<Home> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return Categories();
-                      }));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return Categories();
+                          }));
                     },
                     child: Row(
                       children: [
                         Text(
-                          'See All',
+                          S.of(context).seeAll,
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -170,10 +192,7 @@ class _HomeState extends State<Home> {
                             fontFamily: 'NotoSerifGeorgian',
                           ),
                         ),
-                        Icon(
-                          Icons.chevron_right,
-                          color: colors.primary,
-                        ),
+                        Icon(Icons.chevron_right, color: colors.primary),
                       ],
                     ),
                   ),
@@ -181,6 +200,7 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(height: 4),
 
+              // Categories list
               SizedBox(
                 height: 48,
                 child: ListView.separated(
@@ -191,19 +211,14 @@ class _HomeState extends State<Home> {
                     final category = categoryCards.keys.elementAt(index);
                     final isSelected = selectedCategory == category;
                     return ChoiceChip(
-                      label: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            category,
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : colors.primary,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'NotoSerifGeorgian',
-                            ),
-                          ),
-
-                        ],
+                      label: Text(
+                        category,
+                        style: TextStyle(
+                          color:
+                          isSelected ? Colors.white : colors.primary,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'NotoSerifGeorgian',
+                        ),
                       ),
                       selected: isSelected,
                       onSelected: (_) {
@@ -230,116 +245,129 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Cards list
               Expanded(
                 child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: filteredCards.isEmpty
-                        ? Center(
-                      key: const ValueKey('empty'),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.sentiment_dissatisfied_outlined,
-                              size: 60,
-                              color:
-                              colors.onPrimary.withOpacity(0.4)),
-                          const SizedBox(height: 8),
-                          Text(
-                            'No results found',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color:
-                              colors.onPrimary.withOpacity(0.6),
-                              fontFamily: 'NotoSerifGeorgian',
-                            ),
+                  duration: const Duration(milliseconds: 300),
+                  child: filteredCards.isEmpty
+                      ? Center(
+                    key: const ValueKey('empty'),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.sentiment_dissatisfied_outlined,
+                            size: 60,
+                            color:
+                            colors.onPrimary.withOpacity(0.4)),
+                        const SizedBox(height: 8),
+                        Text(
+                          'No results found',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color:
+                            colors.onPrimary.withOpacity(0.6),
+                            fontFamily: 'NotoSerifGeorgian',
                           ),
-                        ],
-                      ),
-                    )
-                        : ListView.builder(
-                      key: ValueKey(selectedCategory!),
-                      physics:
-                      const AlwaysScrollableScrollPhysics(),
-                      itemCount: filteredCards.length,
-                      itemBuilder: (context, index) {
-                        final cardTitle = filteredCards[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () {
-                            },
-                            splashColor:
-                            colors.primary.withOpacity(0.3),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: colors.onSurface,
-                                borderRadius: BorderRadius.circular(16),
-
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ]
-                              ),
-                              child: ListTile(
-                                contentPadding:
-                                const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 12),
-                                title: Text(
-                                  cardTitle,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: colors.primary,
-                                    fontFamily: 'NotoSerifGeorgian',
-                                  ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Specializing',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: colors.onPrimary,
-                                        fontFamily: 'NotoSerifGeorgian',
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '4.5 ',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: colors.onPrimary,
-                                            fontFamily: 'NotoSerifGeorgian',
-                                          ),
-                                        ),
-                                        Icon(Icons.star_border,color: colors.onPrimary,size: 14,)
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    size: 18, color: colors.onPrimary),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
+                  )
+                      : ListView.builder(
+                    key: ValueKey(selectedCategory!),
+                    physics:
+                    const AlwaysScrollableScrollPhysics(),
+                    itemCount: filteredCards.length,
+                    itemBuilder: (context, index) {
+                      final cardTitle = filteredCards[index];
+                      return Padding(
+                        padding:
+                        const EdgeInsets.only(bottom: 12),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {},
+                          splashColor:
+                          colors.primary.withOpacity(0.3),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colors.onSurface,
+                              borderRadius:
+                              BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black
+                                      .withOpacity(0.2),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              contentPadding:
+                              const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12),
+                              title: Text(
+                                cardTitle,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: colors.primary,
+                                  fontFamily:
+                                  'NotoSerifGeorgian',
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Specializing',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: colors.onPrimary,
+                                      fontFamily:
+                                      'NotoSerifGeorgian',
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '4.5 ',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: colors.onPrimary,
+                                          fontFamily:
+                                          'NotoSerifGeorgian',
+                                        ),
+                                      ),
+                                      Icon(Icons.star_border,
+                                          color: colors.onPrimary,
+                                          size: 14)
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 18,
+                                color: colors.onPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
   void _showThemeLanguageDialog() {
     showDialog(
       context: context,
@@ -357,5 +385,4 @@ class _HomeState extends State<Home> {
       },
     );
   }
-
 }

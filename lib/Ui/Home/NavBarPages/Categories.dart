@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../generated/l10n.dart';
 import '../Components/CategoryCard.dart';
 import '../Pages/AllConsultant.dart';
 
@@ -41,11 +43,11 @@ class _CategoriesState extends State<Categories> {
 
       appBar: AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
-        leading: Container(),             // override any default leading widget
+        leading: Container(),
         title:  Padding(
-          padding: const EdgeInsets.only(left: 60.0),
+          padding: EdgeInsets.only(left: isArabic()? 0 :70.0,right: isArabic()?70:0),
           child: Text(
-          'Categories',
+          S.of(context).categories,
           style: TextStyle(
             fontFamily: 'NotoSerifGeorgian',
             fontWeight: FontWeight.bold,
@@ -79,4 +81,8 @@ class _CategoriesState extends State<Categories> {
       ),
     ),);
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

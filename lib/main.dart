@@ -13,6 +13,7 @@ import 'Ui/Auth/Login/pages/login.dart';
 import 'Ui/Auth/Register/Pages/IsConsaltant.dart';
 import 'Ui/Auth/onBoarding/pages/onBoarding.dart';
 import 'Ui/ConsaltantUi/NavBar/NavBarPages/addConsutation.dart';
+import 'Ui/ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import 'Ui/Home/Pages/NavBar.dart';
 import 'generated/l10n.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +115,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const Login(),
         '/navbar': (context) => Navbar()
       },
-      home:  Login(),
+      home:  consultNavBar(),
     );
   }
 }

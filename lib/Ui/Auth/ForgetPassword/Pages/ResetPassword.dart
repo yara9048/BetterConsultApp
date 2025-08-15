@@ -1,7 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/Auth/NewPasswordProvider.dart';
+import '../../../../generated/l10n.dart';
 import '../../Login/pages/login.dart';
 import '../../Register/Compoenets/text.dart';
 
@@ -28,9 +32,6 @@ class _ResetPasswordState extends State<ResetPassword> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: text(
-                    label: "Password reset successfully! Please login.",
+                    label: S.of(context).resetSuccess,
                     fontSize: 14,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -58,7 +59,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             } else if (provider.errorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(provider.errorMessage ?? 'Password reset failed'),
+                  content: Text(S.of(context).resetFailed),
                 ),
               );
               provider.reset();
@@ -70,33 +71,38 @@ class _ResetPasswordState extends State<ResetPassword> {
             body: SingleChildScrollView(
               child: Stack(
                 children: [
-                  Image.asset("assets/images/Untitled design (1).png"),
+                  Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),child: Image.asset("assets/images/Untitled design (1).png")),
                   Positioned(
                     top: 70,
                     left: 30,
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                            size: 25,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 18.0),
-                          child: Text(
-                            "Reset Password",
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontFamily: 'NotoSerifGeorgian',
+                    child: Padding(
+                      padding: EdgeInsets.only(left: isArabic() ? 20 :0 ),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 25,
                             ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18.0),
+                            child: Text(
+                              S.of(context).resetPassword,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontFamily: 'NotoSerifGeorgian',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -106,7 +112,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       child: Column(
                         children: [
                           Text(
-                            "Enter new password",
+                            S.of(context).reset1,
                             style: TextStyle(
                               fontSize: 24,
                               color: Theme.of(context).colorScheme.primary,
@@ -115,7 +121,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             ),
                           ),
                           Text(
-                            "Your new password should be different",
+                            S.of(context).reset2,
                             style: TextStyle(
                               fontSize: 16,
                               color: Theme.of(context).colorScheme.surface.withOpacity(0.4),
@@ -124,7 +130,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             ),
                           ),
                           Text(
-                            "from your previously used one",
+                            S.of(context).reset3,
                             style: TextStyle(
                               fontSize: 16,
                               color: Theme.of(context).colorScheme.surface.withOpacity(0.4),
@@ -165,7 +171,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     width: 2.0,
                                   ),
                                 ),
-                                hintText: "Enter your new password",
+                                hintText: S.of(context).passwordHint,
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -195,10 +201,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter new password';
+                                  return S.of(context).newPasswordValidation1;
                                 }
                                 if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
+                                  return S.of(context).newPasswordValidation2;
                                 }
                                 return null;
                               },
@@ -237,7 +243,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     width: 2.0,
                                   ),
                                 ),
-                                hintText: "Confirm the password",
+                                hintText: S.of(context).confirmPasswordHint,
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -267,10 +273,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please confirm your password';
+                                  return S.of(context).confirmPasswordValidation1;
                                 }
                                 if (value != _passwordController.text) {
-                                  return 'Passwords do not match';
+                                  return S.of(context).confirmPasswordValidation2;
                                 }
                                 return null;
                               },
@@ -295,8 +301,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                               if (!_formKey.currentState!.validate()) return;
 
                               await provider.ResetPassword(widget.email, _passwordController.text);},
-                              child: const Text(
-                                "Recover Password",
+                              child: Text(
+                                S.of(context).recover,
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.white,
@@ -319,4 +325,8 @@ class _ResetPasswordState extends State<ResetPassword> {
       ),
     );
   }
+  bool isArabic() {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

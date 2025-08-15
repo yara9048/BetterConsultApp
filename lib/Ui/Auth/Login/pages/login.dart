@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled6/Providers/Auth/LoginProvider.dart';
-
+import '../../../../generated/l10n.dart';
 import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import '../../../Home/Pages/NavBar.dart';
 import '../../ForgetPassword/Pages/forgetPass.dart';
@@ -38,7 +39,7 @@ class _LoginState extends State<Login> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: text(
-                      label: "Login success!",
+                      label:S.of(context).loginSuccess,
                       fontSize: 14,
                       color: colorScheme.onSurface,
                     ),
@@ -58,7 +59,7 @@ class _LoginState extends State<Login> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: text(
-                      label: "Wrong login information",
+                      label: S.of(context).loginErrorSnackBar,
                       fontSize: 14,
                       color: colorScheme.onSurface,
                     ),
@@ -87,12 +88,15 @@ class _LoginState extends State<Login> {
                 Positioned(
                   top: 70,
                   left: 30,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Icon(Icons.arrow_back_ios,
-                        color: Colors.white, size: 28),
+                  child: Padding(
+                    padding: EdgeInsets.only(left:isArabic() ? 260: 0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Icon(Icons.arrow_back_ios,
+                          color: Colors.white, size: 28),
+                    ),
                   ),
                 ),
                 Positioned(
@@ -118,12 +122,12 @@ class _LoginState extends State<Login> {
                               child: Column(
                                 children: [
                                   text(
-                                    label: "Welcome Back!",
+                                    label: S.of(context).loginWelcome1,
                                     fontSize: 25,
                                     color: colorScheme.surface.withOpacity(0.6),
                                   ),
                                   text(
-                                    label: "Login to our app to continue",
+                                    label: S.of(context).loginWelcome2,
                                     fontSize: 16,
                                     color: colorScheme.surface.withOpacity(0.4),
                                   ),
@@ -132,7 +136,7 @@ class _LoginState extends State<Login> {
                             ),
                             const SizedBox(height: 25),
                             text(
-                              label: "Email",
+                              label: S.of(context).email,
                               fontSize: 16,
                               color: colorScheme.surface.withOpacity(0.4),
                             ),
@@ -180,7 +184,7 @@ class _LoginState extends State<Login> {
                                     width: 2.0,
                                   ),
                                 ),
-                                hintText: "Enter your email",
+                                hintText:S.of(context).emailHint,
                                 hintStyle: TextStyle(
                                   color: colorScheme.primary,
                                   fontSize: 15,
@@ -192,16 +196,16 @@ class _LoginState extends State<Login> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "Email mustn't be empty";
+                                  return S.of(context).emailValidation1;
                                 } else if (!value.contains('@')) {
-                                  return 'Please enter a valid email';
+                                  return S.of(context).emailValidation2;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 10),
                             text(
-                              label: "Password",
+                              label: S.of(context).password,
                               fontSize: 16,
                               color: colorScheme.surface.withOpacity(0.4),
                             ),
@@ -250,7 +254,7 @@ class _LoginState extends State<Login> {
                                     width: 2.0,
                                   ),
                                 ),
-                                hintText: "Enter your password",
+                                hintText: S.of(context).passwordHint,
                                 hintStyle: TextStyle(
                                   color: colorScheme.primary,
                                   fontSize: 15,
@@ -275,14 +279,14 @@ class _LoginState extends State<Login> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "Password mustn't be empty";
+                                  return S.of(context).passwordValidation1;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 5),
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment: isArabic()? Alignment.centerLeft : Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -293,7 +297,7 @@ class _LoginState extends State<Login> {
                                   );
                                 },
                                 child: Text(
-                                  "Forgot Password?",
+                                  S.of(context).doforgetPassword,
                                   style: TextStyle(
                                     color: colorScheme.surface.withOpacity(0.4),
                                     fontSize: 12,
@@ -332,7 +336,7 @@ class _LoginState extends State<Login> {
 
                                 )
                                     : text(
-                                  label: "Login",
+                                  label: S.of(context).login,
                                   fontSize: 20,
                                   color: colorScheme.onSurface,
                                 ),
@@ -343,7 +347,7 @@ class _LoginState extends State<Login> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 text(
-                                  label: "Don't have an account? ",
+                                  label: S.of(context).DontHaveAccount,
                                   fontSize: 15,
                                   color: colorScheme.surface.withOpacity(0.4),
                                 ),
@@ -353,11 +357,11 @@ class _LoginState extends State<Login> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              Register(email: '',)),
+                                              Emailconfiramtion()),
                                     );
                                   },
                                   child: text(
-                                    label: "Sign up",
+                                    label: S.of(context).signup,
                                     fontSize: 15,
                                     color: colorScheme.primary,
                                   ),
@@ -377,4 +381,8 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }

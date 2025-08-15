@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../Providers/Auth/logoutProvider.dart';
+import '../../../generated/l10n.dart';
 import '../../../main.dart';
 import '../../Auth/Register/Compoenets/text.dart';
 import '../../Auth/Register/Pages/IsConsaltant.dart';
@@ -21,7 +23,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late bool isDarkMode;
   late String currentLanguage;
-  bool _isConsultant = false;
 
   @override
   void didChangeDependencies() {
@@ -38,7 +39,6 @@ class _ProfileState extends State<Profile> {
       create: (_) => Logoutprovider(),
       child: Consumer<Logoutprovider>(
         builder: (context, logoutProvider, _) {
-          // React to logout success or error AFTER build:
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (logoutProvider.isSuccess) {
               logoutProvider.reset();
@@ -74,8 +74,8 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
 
-                  const Text(
-                    'Profile',
+                   Text(
+                    S.of(context).profile,
                     style: TextStyle(
                       fontFamily: 'NotoSerifGeorgian',
                       fontWeight: FontWeight.bold,
@@ -148,7 +148,7 @@ class _ProfileState extends State<Profile> {
 
                   const SizedBox(height: 30),
 
-                  const SectionHeader(label: 'Personal Information'),
+                   SectionHeader(label: S.of(context).personalInformation),
                   const SizedBox(height: 8),
                   const InfoCard(
                     children: [
@@ -160,7 +160,7 @@ class _ProfileState extends State<Profile> {
 
                   const SizedBox(height: 24),
 
-                  const SectionHeader(label: 'Contact Details'),
+                   SectionHeader(label: S.of(context).contactDetails),
                   const SizedBox(height: 8),
                   const InfoCard(
                     children: [
@@ -171,7 +171,7 @@ class _ProfileState extends State<Profile> {
 
                   const SizedBox(height: 24),
 
-                  const SectionHeader(label: 'Preferences'),
+                   SectionHeader(label: S.of(context).preferences),
                   const SizedBox(height: 8),
                   InfoCard(
                     children: [
@@ -179,9 +179,9 @@ class _ProfileState extends State<Profile> {
                         builder: (context, setStateSB) {
                           return ProfileItemRow(
                             icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                            label: 'Themes',
+                            label: S.of(context).theme,
                             trailingWidget: Padding(
-                              padding: const EdgeInsets.only(left: 140.0),
+                              padding: EdgeInsets.only(left: isArabic()? 0 :140.0,right: isArabic()?140:0),
                               child: Switch.adaptive(
                                 value: isDarkMode,
                                 onChanged: (value) {
@@ -204,9 +204,9 @@ class _ProfileState extends State<Profile> {
                         builder: (context, setStateSB) {
                           return ProfileItemRow(
                             icon: Icons.language,
-                            label: 'Language',
+                            label: S.of(context).language,
                             trailingWidget: Padding(
-                              padding: const EdgeInsets.only(left: 60.0),
+                              padding:  EdgeInsets.only(left:isArabic()?0: 60.0,right: isArabic()?90:0),
                               child: SizedBox(
                                 width: 120,
                                 child: CompactDropdown(
@@ -215,7 +215,7 @@ class _ProfileState extends State<Profile> {
                                     DropdownMenuItem(
                                       value: 'en',
                                       child: Text(
-                                        "English",
+                                        S.of(context).english,
                                         style: TextStyle(
                                           color: theme.colorScheme.primary,
                                           fontFamily: 'NotoSerifGeorgian',
@@ -225,7 +225,7 @@ class _ProfileState extends State<Profile> {
                                     DropdownMenuItem(
                                       value: 'ar',
                                       child: Text(
-                                        "Arabic",
+                                        S.of(context).arabic,
                                         style: TextStyle(
                                           color: theme.colorScheme.primary,
                                           fontFamily: 'NotoSerifGeorgian',
@@ -266,13 +266,12 @@ class _ProfileState extends State<Profile> {
                         borderRadius: BorderRadius.circular(12),
                         onTap: () {
                           _Confirmation();
-                          print("Confirmed as Consultant!");
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                           child: Center(
                             child: text(
-                              label: "Start Your Consultant Journey with us",
+                              label:S.of(context).switchToConsultant,
                                 color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 14,
                               ),
@@ -312,7 +311,7 @@ class _ProfileState extends State<Profile> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Confiramtion",
+                  S.of(context).confirmation,
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w700,
@@ -322,10 +321,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 const SizedBox(height: 20),
             Text(
-              "By becoming a consultant, you will be able to share your experience, "
-                  "but also will be having higher responsibilities. "
-                  "However, this role requires dedication, professionalism, "
-                  "and consistent performance. Are you ready to take on these responsibilities?",
+              S.of(context).confirmation1 + " " + S.of(context).confirmation2 + " " + S.of(context).confirmation3 + " " + S.of(context).confirmation4,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -353,7 +349,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("CANCEL"),
+                        child:  Text(S.of(context).cancel),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -384,7 +380,7 @@ class _ProfileState extends State<Profile> {
                         onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context){return Isconsaltant();}));
                         },
-                        child: const Text("Confirm"),
+                        child: Text(S.of(context).confirm),
                       ),
                     ),
                   ],
@@ -395,7 +391,12 @@ class _ProfileState extends State<Profile> {
           ),
         );
       },
+
     );
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 
 }

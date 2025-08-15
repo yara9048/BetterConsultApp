@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled6/Ui/ConsaltantUi/NavBar/NavBarPages/profile.dart';
+import '../../../../generated/l10n.dart';
 import '../NavBarPages/addConsutation.dart';
 import '../NavBarPages/home.dart';
 
@@ -60,23 +61,23 @@ class _consultNavBarState extends State<consultNavBar> {
             fontFamily: 'NotoSerifGeorgian',
           ),
           unselectedLabelStyle: TextStyle(fontFamily: 'NotoSerifGeorgian'),
-          items: const [
+          items: [
 
 
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
-            label: 'Profile',
+            label: S.of(context).profile,
           ),
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
-              label: 'Home',
+              label: S.of(context).home,
             ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
             activeIcon: Icon(Icons.add),
-            label: 'Add Consultation',
+            label:S.of(context).add,
           ),
 
           ],

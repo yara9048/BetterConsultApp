@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../generated/l10n.dart';
 import '../Components/ChatBubble.dart';
 
 class Generalchat extends StatefulWidget {
@@ -53,7 +54,7 @@ class _GeneralchatState extends State<Generalchat> {
           child: Padding(
             padding: EdgeInsets.only(right: 50.0),
             child: Text(
-              'General Chat',
+              S.of(context).generalChat,
               style: TextStyle(
                 fontFamily: 'NotoSerifGeorgian',
                 fontWeight: FontWeight.bold,
@@ -100,7 +101,7 @@ class _GeneralchatState extends State<Generalchat> {
                 fontWeight: FontWeight.bold,
               ),
               decoration: InputDecoration(
-                hintText: 'Type your message..',
+                hintText: S.of(context).chatHint,
                 hintStyle: TextStyle(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                   fontSize: 15,

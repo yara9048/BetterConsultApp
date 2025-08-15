@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../../generated/l10n.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({super.key});
@@ -17,9 +20,9 @@ class _FavoriteState extends State<Favorite> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         leading: Container(),
         title:  Padding(
-          padding: const EdgeInsets.only(left: 70.0),
+          padding: EdgeInsets.only(left: isArabic()? 0 :70.0,right: isArabic()?70:0),
           child: Text(
-            'Favorite',
+            S.of(context).favorite,
             style: TextStyle(
               fontFamily: 'NotoSerifGeorgian',
               fontWeight: FontWeight.bold,
@@ -31,4 +34,8 @@ class _FavoriteState extends State<Favorite> {
       body: Center(child: Text("Favorite"),),
     );
   }
+  bool isArabic () {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
 }
