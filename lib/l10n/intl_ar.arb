@@ -166,6 +166,11 @@
   "confirmedOption": "تم التأكيد! الخيار:",
   "consultationDone": "تم إرسال الاستشارة بنجاح!",
   "pleaseUpload": "يرجى رفع",
-  "file": "ملف."
+  "file": "ملف.",
+
+  "NoCategories": "لا فئات وجدت",
+  "all": "الكل"
+
+
 
 }

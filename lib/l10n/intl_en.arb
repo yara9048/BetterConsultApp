@@ -166,5 +166,8 @@
   "confirmedOption" : "Confirmed! Option:",
   "consultationDone": "Consultation submitted successfully!",
   "pleaseUpload": "Please upload a",
-  "file": "file."
+  "file": "file.",
+
+  "NoCategories": "No categories found.",
+  "all": "All"
 }

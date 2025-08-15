@@ -33,27 +33,25 @@ class GetDomainsProvider with ChangeNotifier {
 
       print(token);
       print(url);
-      print(response.data); // Add this to see the actual response structure
+      print(response.data);
 
       if (response.statusCode == 200) {
         if (response.data is String) {
           _domains = getDomainsModelFromJson(response.data);
         } else if (response.data is List) {
-          // If the response is already a List, convert it directly
           _domains = (response.data as List)
               .map((item) => GetDomainsModel.fromJson(item))
               .toList();
         } else if (response.data is Map) {
-          // If the response is a Map with a data field containing the list
           _domains = (response.data['data'] as List)
               .map((item) => GetDomainsModel.fromJson(item))
               .toList();
         }
       } else {
-        _errorMessage = 'Failed to fetch domains: ${response.statusCode}';
+        _errorMessage = 'Failed to fetch domains';
       }
     } catch (e) {
-      _errorMessage = 'Failed to fetch domains: $e';
+      _errorMessage = 'Failed to fetch domains';
       print(e);
     }
 

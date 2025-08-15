@@ -8,6 +8,9 @@ class Endpoints {
   static const String sendOTP = 'auth/send-otp/';
   static const String verifyOTP = 'auth/verify-otp/';
   static const String resetPassword = 'auth/confirm-password-reset/';
+  static const String getDomains = 'domains/';
+  static const String getSubDomains = 'subdomains/by-domain/';
+
 
 
 }

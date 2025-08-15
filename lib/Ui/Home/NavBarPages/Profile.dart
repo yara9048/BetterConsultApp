@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../Providers/Auth/logoutProvider.dart';
 import '../../../generated/l10n.dart';
 import '../../../main.dart';
+import '../../Auth/Login/pages/login.dart';
 import '../../Auth/Register/Compoenets/text.dart';
 import '../../Auth/Register/Pages/IsConsaltant.dart';
 import '../Components/InfoCard.dart';
@@ -42,7 +43,7 @@ class _ProfileState extends State<Profile> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (logoutProvider.isSuccess) {
               logoutProvider.reset();
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.push(context, MaterialPageRoute(builder: (context){return Login();}));
             } else if (logoutProvider.errorMessage != null) {
               final msg = logoutProvider.errorMessage!;
               logoutProvider.reset();

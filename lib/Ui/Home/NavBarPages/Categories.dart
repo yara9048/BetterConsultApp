@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import '../../../Providers/Home/User/NavBarProviders/GetDomainsProvider.dart';
 import '../../../generated/l10n.dart';
+import '../../Auth/Register/Compoenets/text.dart';
 import '../Components/CategoryCard.dart';
 import '../Pages/AllConsultant.dart';
 
@@ -12,77 +15,80 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
-  final List<Map<String, String>> categories = [
-    {
-      'name': 'Medical',
-      'image': 'https://source.unsplash.com/400x300/?spa,nature',
-    },
-    {
-      'name': 'Technical',
-      'image': 'https://source.unsplash.com/400x300/?fitness,gym',
-    },
-    {
-      'name': 'Psychological',
-      'image': 'https://source.unsplash.com/400x300/?meditation,calm',
-    },
-    {
-      'name': 'Health',
-      'image': 'https://source.unsplash.com/400x300/?healthy,food',
-    },
-    {
-      'name': 'Judical',
-      'image': 'https://source.unsplash.com/400x300/?yoga,relax',
-    },
-
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<GetDomainsProvider>(context, listen: false).fetchDomains();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-             backgroundColor: const Color(0xfff5f7fa),
-
+      backgroundColor: const Color(0xfff5f7fa),
       appBar: AppBar(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         leading: Container(),
-        title:  Padding(
-          padding: EdgeInsets.only(left: isArabic()? 0 :70.0,right: isArabic()?70:0),
+        title: Padding(
+          padding: EdgeInsets.only(left: isArabic() ? 0 : 70.0, right: isArabic() ? 70 : 0),
           child: Text(
-          S.of(context).categories,
-          style: TextStyle(
-            fontFamily: 'NotoSerifGeorgian',
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
+            S.of(context).categories,
+            style: const TextStyle(
+              fontFamily: 'NotoSerifGeorgian',
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
           ),
         ),
-      ),),
-      body: Padding(
-      padding: const EdgeInsets.only(left: 12.0,right: 12,top: 12),
-      child: GridView.builder(
-        shrinkWrap: true,
-        itemCount: categories.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // 2 columns
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.8, // height/width ratio
-        ),
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return CategoryCard(
-            name: category['name']!,
-            imageUrl: category['image']!,
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                return AllConsultant();
-              }));
-            },
-          );
+      ),
+      body: Consumer<GetDomainsProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (provider.errorMessage != null) {
+            return SnackBar(
+              content: text(
+                label: provider.errorMessage!,
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+            );
+          } else if (provider.domains.isEmpty) {
+            return Center(child: text(label: S.of(context).NoCategories,fontSize: 25,color: Theme.of(context).colorScheme.primary,));
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12, top: 12),
+              child: GridView.builder(
+                shrinkWrap: true,
+                itemCount: provider.domains.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.8,
+                ),
+                itemBuilder: (context, index) {
+                  final category = provider.domains[index];
+                  return CategoryCard(
+                    name: category.name,
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllConsultant(id: category.id,)));
+                      print(category.id);
+                      print(category.name);
+                    },
+                  );
+                },
+              ),
+            );
+          }
         },
       ),
-    ),);
-  }
-  bool isArabic () {
-    return Intl.getCurrentLocale() == 'ar';
+    );
   }
 
+  bool isArabic() {
+    return Intl.getCurrentLocale() == 'ar';
+  }
 }

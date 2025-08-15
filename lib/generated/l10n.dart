@@ -1363,6 +1363,21 @@ class S {
   String get file {
     return Intl.message('file.', name: 'file', desc: '', args: []);
   }
+
+  /// `No categories found.`
+  String get NoCategories {
+    return Intl.message(
+      'No categories found.',
+      name: 'NoCategories',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get all {
+    return Intl.message('All', name: 'all', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

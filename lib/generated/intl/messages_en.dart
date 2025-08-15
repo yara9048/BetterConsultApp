@@ -28,6 +28,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "IndustryInformation": MessageLookupByLibrary.simpleMessage(
       "IndustryInformation",
     ),
+    "NoCategories": MessageLookupByLibrary.simpleMessage(
+      "No categories found.",
+    ),
     "OTP1": MessageLookupByLibrary.simpleMessage("Get your Code"),
     "OTP2": MessageLookupByLibrary.simpleMessage(
       "Please enter your 6 digit code that",
@@ -50,6 +53,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Choose the consultation type then uploaded it",
     ),
     "addError": MessageLookupByLibrary.simpleMessage("No files uploaded yet"),
+    "all": MessageLookupByLibrary.simpleMessage("All"),
     "allConsultant": MessageLookupByLibrary.simpleMessage("All Consultant"),
     "apply": MessageLookupByLibrary.simpleMessage("Apply"),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
   final String name;
-  final String imageUrl;
   final VoidCallback onTap;
 
   const CategoryCard({
     super.key,
     required this.name,
-    required this.imageUrl,
     required this.onTap,
   });
 

@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "IndustryInformation": MessageLookupByLibrary.simpleMessage(
       "مععلومات المجال",
     ),
+    "NoCategories": MessageLookupByLibrary.simpleMessage("لا فئات وجدت"),
     "OTP1": MessageLookupByLibrary.simpleMessage("احصل على رمزك"),
     "OTP2": MessageLookupByLibrary.simpleMessage(
       "يرجى إدخال رمز التحقق المكوّن من 6 أرقام",
@@ -48,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "اختر نوع الاستشارة ثم قم برفعها",
     ),
     "addError": MessageLookupByLibrary.simpleMessage("لا ملفات مرفقة"),
+    "all": MessageLookupByLibrary.simpleMessage("الكل"),
     "allConsultant": MessageLookupByLibrary.simpleMessage("جميع المستشارين"),
     "apply": MessageLookupByLibrary.simpleMessage("تطبيق"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),

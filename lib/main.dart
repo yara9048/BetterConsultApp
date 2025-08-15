@@ -9,6 +9,8 @@ import 'package:untitled6/Themes/lightTheme.dart';
 import 'DIO/DioHelper.dart';
 import 'Providers/Auth/SendOtpProvider.dart';
 import 'Providers/Auth/VerifyEmailProvider.dart';
+import 'Providers/Home/User/NavBarProviders/GetDomainsProvider.dart';
+import 'Providers/Home/User/NavBarProviders/GetSubDomainsProvider.dart';
 import 'Ui/Auth/Login/pages/login.dart';
 import 'Ui/Auth/Register/Pages/IsConsaltant.dart';
 import 'Ui/Auth/onBoarding/pages/onBoarding.dart';
@@ -31,6 +33,9 @@ void main() {
             ChangeNotifierProvider(create: (_) => VerifyEmailProvider()),
             ChangeNotifierProvider(create: (_) => SendOTPProvider()),
             ChangeNotifierProvider(create: (_) => NewPasswordProvider()),
+            ChangeNotifierProvider(create: (_) => GetDomainsProvider()),
+            ChangeNotifierProvider(create: (_) => GetSubDomainsProvider()),
+
 
 
 
@@ -111,11 +116,7 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routes: {
-        '/login': (context) => const Login(),
-        '/navbar': (context) => Navbar()
-      },
-      home:  consultNavBar(),
+      home:  onboarding(),
     );
   }
 }
