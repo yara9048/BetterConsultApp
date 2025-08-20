@@ -7,7 +7,6 @@ import 'package:untitled6/Ui/Auth/Register/Pages/register.dart';
 import '../../../../Providers/Auth/VerifyEmailProvider.dart';
 import '../../../../generated/l10n.dart';
 import '../Compoenets/OtpField.dart';
-import '../Compoenets/text.dart';
 
 class SendCode extends StatefulWidget {
   final String email;
@@ -20,6 +19,7 @@ class SendCode extends StatefulWidget {
 class _SendCodeState extends State<SendCode> {
   final _otpControllers = List.generate(6, (_) => TextEditingController());
   final _focusNodes = List.generate(6, (_) => FocusNode());
+
   String get _otpCode => _otpControllers.map((c) => c.text).join();
 
   @override
@@ -42,22 +42,35 @@ class _SendCodeState extends State<SendCode> {
           if (provider.errorMessage != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: text(
-                      label: S.of(context).OTPFailed,
+                SnackBar(
+                  content: Text(
+                    S.of(context).OTPFailed,
+                    style: TextStyle(
                       fontSize: 14,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                  ),);
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
+              );
               provider.reset();
             });
           }
 
+          /// Handle success state safely
           if (provider.isVerified) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(S.of(context).OTPSuccess)),
+                SnackBar(
+                  content: Text(
+                    S.of(context).OTPSuccess,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
               );
               Navigator.pushReplacement(
                 context,
@@ -74,9 +87,15 @@ class _SendCodeState extends State<SendCode> {
             body: SingleChildScrollView(
               child: Stack(
                 children: [
+                  /// Background image flipped horizontally
                   Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(math.pi),child: Image.asset("assets/images/Untitled design (1).png")),                  Positioned(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(math.pi),
+                    child: Image.asset("assets/images/Untitled design (1).png"),
+                  ),
+
+                  /// Top bar
+                  Positioned(
                     top: 70,
                     left: 30,
                     child: Row(
@@ -91,11 +110,11 @@ class _SendCodeState extends State<SendCode> {
                         ),
                         const SizedBox(width: 18),
                         Padding(
-                          padding: EdgeInsets.only(left: isArabic()? 20:0),
+                          padding: EdgeInsets.only(left: isArabic() ? 20 : 0),
                           child: Text(
                             S.of(context).emailVerification,
                             style: TextStyle(
-                              fontSize: isArabic()? 23:25,
+                              fontSize: isArabic() ? 23 : 25,
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.onSurface,
                               fontFamily: 'NotoSerifGeorgian',
@@ -105,22 +124,31 @@ class _SendCodeState extends State<SendCode> {
                       ],
                     ),
                   ),
+
+                  /// Content
                   Padding(
                     padding: const EdgeInsets.only(top: 250.0),
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: isArabic() ? 0:200.0 , right:  isArabic()? 200 :0),
-                          child: text(
-                            label: S.of(context).step2,
-                            fontSize: 14,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surface
-                                .withOpacity(0.4),
+                          padding: EdgeInsets.only(
+                            left: isArabic() ? 0 : 200.0,
+                            right: isArabic() ? 200 : 0,
+                          ),
+                          child: Text(
+                            S.of(context).step2,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surface
+                                  .withOpacity(0.4),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 50),
+
+                        /// OTP heading
                         Text(
                           S.of(context).OTP1,
                           style: TextStyle(
@@ -155,19 +183,32 @@ class _SendCodeState extends State<SendCode> {
                           ),
                         ),
                         const SizedBox(height: 30),
+
+                        /// OTP fields
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: List.generate(6, (index) => OtpField(
-                            controller: _otpControllers[index],
-                            focusNode: _focusNodes[index],
-                            nextFocusNode: index < 5 ? _focusNodes[index + 1] : null,
-                            prevFocusNode: index > 0 ? _focusNodes[index - 1] : null,
-                            primaryColor: Theme.of(context).colorScheme.primary,
-                            fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.05),
-                          )),
+                          children: List.generate(
+                            6,
+                                (index) => OtpField(
+                              controller: _otpControllers[index],
+                              focusNode: _focusNodes[index],
+                              nextFocusNode:
+                              index < 5 ? _focusNodes[index + 1] : null,
+                              prevFocusNode:
+                              index > 0 ? _focusNodes[index - 1] : null,
+                              primaryColor:
+                              Theme.of(context).colorScheme.primary,
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .surface
+                                  .withOpacity(0.05),
+                            ),
+                          ),
                         ),
 
                         const SizedBox(height: 30),
+
+                        /// Verify button
                         SizedBox(
                           width: 320,
                           child: ElevatedButton(
@@ -184,18 +225,29 @@ class _SendCodeState extends State<SendCode> {
                                 ? null
                                 : () async {
                               if (_otpCode.length < 6) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: text(
-                                        label: S.of(context).OTPValidation,
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      S.of(context).OTPValidation,
+                                      style: TextStyle(
                                         fontSize: 14,
-                                        color: Theme.of(context).colorScheme.onSurface,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary,
                                       ),
-                                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                                    ));
-                                return; }
+                                    ),
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .secondary,
+                                  ),
+                                );
+                                return;
+                              }
                               await provider.verifyEmail(
-                                  widget.email, _otpCode);
+                                widget.email,
+                                _otpCode,
+                              );
                             },
                             child: provider.isLoading
                                 ? const SizedBox(
@@ -208,7 +260,7 @@ class _SendCodeState extends State<SendCode> {
                             )
                                 : Text(
                               S.of(context).verifyAnsProceed,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -228,7 +280,8 @@ class _SendCodeState extends State<SendCode> {
       ),
     );
   }
-  bool isArabic () {
+
+  bool isArabic() {
     return Intl.getCurrentLocale() == 'ar';
   }
 }

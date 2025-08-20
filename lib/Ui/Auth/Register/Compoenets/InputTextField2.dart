@@ -46,11 +46,11 @@ class _InputTextField2State extends State<InputTextField2> {
           maxLength: widget.maxLength,
           maxLines: widget.maxLines,
           validator: widget.validator,
-          style: TextStyle(color: colorScheme.surface.withOpacity(0.9)),
+          style: TextStyle(color: colorScheme.surface.withOpacity(0.4)),
           decoration: InputDecoration(
             prefixIcon: widget.icon != null ? Icon(widget.icon, color: colorScheme.primary) : null,
             filled: true,
-            counterText: "", // hide default maxLength text
+            counterText: "",
             fillColor: colorScheme.surface.withOpacity(0.05),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
@@ -65,7 +65,7 @@ class _InputTextField2State extends State<InputTextField2> {
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
             ),
-            hintText: S.of(context).enter + widget.label.toLowerCase() ,
+            hintText: "${S.of(context).enter} ${widget.label.toLowerCase()}" ,
             hintStyle: TextStyle(
               color: colorScheme.primary,
               fontSize: 14,

@@ -1,7 +1,5 @@
-import 'package:intl/intl.dart';
-
 class Endpoints {
-  static const String baseUrl = 'http://192.168.1.2:8000/api/';
+  static const String baseUrl = 'http://192.168.146.131:8000/api/';
   static const String login = 'auth/login/';
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';
@@ -10,7 +8,11 @@ class Endpoints {
   static const String resetPassword = 'auth/confirm-password-reset/';
   static const String getDomains = 'domains/';
   static const String getSubDomains = 'subdomains/by-domain/';
-
+  static const String sendApplication = 'consultant-applications/';
+  static const String allConsultantByDomain = 'consultants/by-domain-subdomain/';
+  static const String favorite = 'favorites/';
+  static const String consultantDetails = 'consultants/';
+  static const String search = 'consultants/?search=';
 
 
 }

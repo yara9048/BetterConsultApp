@@ -38,7 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "OTP3": MessageLookupByLibrary.simpleMessage(
       "was sent to your email address",
     ),
-    "OTPFailed": MessageLookupByLibrary.simpleMessage("OTP invalid"),
+    "OTPFailed": MessageLookupByLibrary.simpleMessage("email invalid"),
     "OTPSuccess": MessageLookupByLibrary.simpleMessage(
       "Email Verified Successfully",
     ),
@@ -161,7 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "english": MessageLookupByLibrary.simpleMessage("English"),
     "enter": MessageLookupByLibrary.simpleMessage("enter"),
     "favorite": MessageLookupByLibrary.simpleMessage("Favorites"),
-    "fee": MessageLookupByLibrary.simpleMessage("fee"),
+    "fee": MessageLookupByLibrary.simpleMessage("Cost"),
     "female": MessageLookupByLibrary.simpleMessage("Female"),
     "field": MessageLookupByLibrary.simpleMessage("Field / Industry"),
     "file": MessageLookupByLibrary.simpleMessage("file."),

@@ -374,9 +374,9 @@ class S {
     );
   }
 
-  /// `OTP invalid`
+  /// `email invalid`
   String get OTPFailed {
-    return Intl.message('OTP invalid', name: 'OTPFailed', desc: '', args: []);
+    return Intl.message('email invalid', name: 'OTPFailed', desc: '', args: []);
   }
 
   /// `Email Verification`
@@ -1089,9 +1089,9 @@ class S {
     );
   }
 
-  /// `fee`
+  /// `Cost`
   String get fee {
-    return Intl.message('fee', name: 'fee', desc: '', args: []);
+    return Intl.message('Cost', name: 'fee', desc: '', args: []);
   }
 
   /// `Chat with Consultant`

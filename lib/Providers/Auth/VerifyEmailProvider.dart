@@ -20,6 +20,9 @@ class VerifyEmailProvider with ChangeNotifier {
     notifyListeners();
 
     String url = Endpoints.baseUrl + Endpoints.verifyOTP;
+    print(url);
+    print(email);
+    print(otp);
     try {
       final response = await DioHelper.postData(
         url: url,
@@ -28,7 +31,7 @@ class VerifyEmailProvider with ChangeNotifier {
           'otp': otp,
         },
       );
-
+      print(otp);
       if (response.statusCode == 200) {
         final token = response.data['token'];
         if (token != null) {
@@ -43,6 +46,7 @@ class VerifyEmailProvider with ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = 'Failed: $e';
+      print(e);
     } finally {
       _isLoading = false;
       notifyListeners();

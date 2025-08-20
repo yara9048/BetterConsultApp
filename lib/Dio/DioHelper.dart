@@ -7,7 +7,7 @@ class DioHelper {
 
     _dio = Dio(
       BaseOptions(
-        receiveTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 60),
       ),
     );
   }
@@ -26,7 +26,7 @@ class DioHelper {
 
   static Future<Response> postData({
     required String url,
-    Map<String, dynamic>? data,
+    dynamic? data,
     Map<String, dynamic>? headers,
   }) async {
     Map<String, dynamic> defaultHeaders = {
@@ -43,5 +43,26 @@ class DioHelper {
       options: Options(headers: defaultHeaders),
     );
   }
+
+  static Future<Response> deleteData({
+    required String url,
+    dynamic? data,
+    Map<String, dynamic>? headers,
+  }) async {
+    Map<String, dynamic> defaultHeaders = {
+      "Content-Type": "application/json",
+    };
+
+    if (headers != null) {
+      defaultHeaders.addAll(headers);
+    }
+
+    return await _dio.delete(
+      url,
+      data: data,
+      options: Options(headers: defaultHeaders),
+    );
+  }
+
 
 }

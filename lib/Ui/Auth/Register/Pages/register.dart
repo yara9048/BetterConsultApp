@@ -32,8 +32,6 @@ class _RegisterState extends State<Register> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isConsultant = false;
-
-  // Gender selection (default: male)
   final List<bool> _selectedGender = [true, false];
   final _scrollController = ScrollController();
 
@@ -76,14 +74,10 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    // Localized gender options
     final List<String> _genderOptions = [
       S.of(context).male,
       S.of(context).female,
     ];
-
-    // Function to return backend-friendly gender string
     String getSelectedGender() {
       for (int i = 0; i < _selectedGender.length; i++) {
         if (_selectedGender[i]) {
@@ -106,17 +100,11 @@ class _RegisterState extends State<Register> {
               provider.reset();
               final prefs = await SharedPreferences.getInstance();
               final role = prefs.getString('user_role');
-              if (role == "user") {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => Navbar()),
-                );
-              } else {
-                Navigator.pushReplacement(
+              Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (_) => Isconsaltant()),
                 );
-              }
+
             });
           }
 
@@ -449,8 +437,6 @@ class _RegisterState extends State<Register> {
                     ),
 
                     const SizedBox(height: 30),
-
-                    // Register Button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 55),
@@ -468,7 +454,7 @@ class _RegisterState extends State<Register> {
                             phoneNumber: _phoneController.text.trim(),
                             gender: getSelectedGender(),
                             password: _passwordController.text.trim(),
-                            role: _isConsultant ? 'consultant' : 'user',
+                            role: 'user',
                           );
                         } else {
                           _scrollController.animateTo(

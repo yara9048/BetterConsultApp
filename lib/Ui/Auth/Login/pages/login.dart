@@ -357,7 +357,7 @@ class _LoginState extends State<Login> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              Emailconfiramtion()),
+                                              Register(email: 'yarayara@gmail.com',)),
                                     );
                                   },
                                   child: text(

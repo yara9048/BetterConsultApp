@@ -38,7 +38,7 @@
   "sendOTPFailed" : "Invalid Email",
 
   "OTPSuccess": "Email Verified Successfully",
-  "OTPFailed": "OTP invalid",
+  "OTPFailed": "email invalid",
   "emailVerification": "Email Verification",
   "OTP1": "Get your Code",
   "OTP2": "Please enter your 6 digit code that",
@@ -136,7 +136,7 @@
   "chatHistory": "Chat History",
   "personalInformation": "Personal Information",
   "contactDetails": "Contact Details",
-  "fee": "fee",
+  "fee": "Cost",
   "chatWithConsultant": "Chat with Consultant",
   "chatHint": "Type your message..",
   "generalChat": "General Chat",

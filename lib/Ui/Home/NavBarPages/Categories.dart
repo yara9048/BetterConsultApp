@@ -74,7 +74,7 @@ class _CategoriesState extends State<Categories> {
                   return CategoryCard(
                     name: category.name,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllConsultant(id: category.id,)));
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllConsultant(id: category.id, name: category.name)));
                       print(category.id);
                       print(category.name);
                     },

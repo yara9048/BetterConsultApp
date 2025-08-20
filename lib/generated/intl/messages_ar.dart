@@ -153,7 +153,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
     "enter": MessageLookupByLibrary.simpleMessage("ادخل"),
     "favorite": MessageLookupByLibrary.simpleMessage("المفضلة"),
-    "fee": MessageLookupByLibrary.simpleMessage("الأجر"),
+    "fee": MessageLookupByLibrary.simpleMessage("التكلفة"),
     "female": MessageLookupByLibrary.simpleMessage("أنثى"),
     "field": MessageLookupByLibrary.simpleMessage("المجال / القطاع"),
     "file": MessageLookupByLibrary.simpleMessage("ملف."),
