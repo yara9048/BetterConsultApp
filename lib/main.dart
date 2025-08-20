@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled6/Models/Home/User/NavBar/ViewProfileModel.dart';
 import 'package:untitled6/Providers/Auth/LoginProvider.dart';
 import 'package:untitled6/Providers/Auth/NewPasswordProvider.dart';
 import 'package:untitled6/Providers/Home/User/NavBarProviders/AddToFavoriteProvider.dart';
 import 'package:untitled6/Providers/Home/User/NavBarProviders/DeleteFromFavoriiteProvider.dart';
+import 'package:untitled6/Providers/Home/User/NavBarProviders/ViewProfileProvider.dart';
 
 import 'package:untitled6/Themes/darkTheme.dart';
 import 'package:untitled6/Themes/lightTheme.dart';
 import 'DIO/DioHelper.dart';
+import 'Models/Home/User/NavBar/DeleteProfile.dart';
 import 'Providers/Auth/SendOtpProvider.dart';
 import 'Providers/Auth/VerifyEmailProvider.dart';
 import 'Providers/Home/User/NavBarProviders/GetAlFavoriteProvider.dart';
@@ -50,6 +53,9 @@ void main() {
             ChangeNotifierProvider(create: (_) => GetFavorite()),
             ChangeNotifierProvider(create: (_) => ConsultantDetailsProvider()),
             ChangeNotifierProvider(create: (_) => SearchProvider()),
+            ChangeNotifierProvider(create: (_) => ViewProfileProvider()),
+            ChangeNotifierProvider(create: (_) => DeleteProfile()),
+
 
 
           ],

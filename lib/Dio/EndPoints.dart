@@ -1,5 +1,5 @@
 class Endpoints {
-  static const String baseUrl = 'http://192.168.146.131:8000/api/';
+  static const String baseUrl = 'http://192.168.3.131:8000/api/';
   static const String login = 'auth/login/';
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';
@@ -13,6 +13,8 @@ class Endpoints {
   static const String favorite = 'favorites/';
   static const String consultantDetails = 'consultants/';
   static const String search = 'consultants/?search=';
-
-
+  static const String viewProfile = 'auth/view_profile/';
+  static const String editProfile = 'auth/update_profile/';
+  static const String deleteProfile = 'auth/delete_account/';
+  
 }
