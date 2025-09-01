@@ -4,9 +4,12 @@ class ProfileItemRow2 extends StatelessWidget {
   final IconData icon;
   final String label;
   final Widget? trailingWidget;
+  final VoidCallback onTap;
+
 
   const ProfileItemRow2({
     super.key,
+    required this.onTap,
     required this.icon,
     required this.label,
     this.trailingWidget,
@@ -31,7 +34,7 @@ class ProfileItemRow2 extends StatelessWidget {
         if (trailingWidget != null) trailingWidget!,
         IconButton(
             onPressed: (){},
-            icon: Icon(Icons.edit, color: theme.colorScheme.onPrimary, size: 20)),
+            icon: IconButton(icon:  Icon(Icons.edit, color: theme.colorScheme.onPrimary, size: 20), onPressed: onTap,),)
       ],
     );
   }

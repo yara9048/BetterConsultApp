@@ -53,7 +53,7 @@ class _AddConsultationState extends State<AddConsultation> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: text(
-              label: S.of(context).uploadValidationInvalid + type,
+              label: S.of(context).uploadValidationInvalid +" " +type,
               fontSize: 14,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -71,7 +71,7 @@ class _AddConsultationState extends State<AddConsultation> {
         SnackBar(
           content: text(
             label:
-            type[0].toUpperCase() + type.substring(1) + S.of(context).uploadValidationSuccess,
+            type[0].toUpperCase() + type.substring(1) +" "+ S.of(context).uploadValidationSuccess,
             fontSize: 14,
             color: Theme.of(context).colorScheme.onSurface,
           ),

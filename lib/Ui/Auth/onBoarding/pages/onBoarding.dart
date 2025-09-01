@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../generated/l10n.dart';
 import '../../Login/pages/login.dart';
+import '../../Register/Compoenets/text.dart';
 import '../components/indicator.dart';
 import '../components/mainWidget.dart';
 
@@ -64,13 +65,11 @@ class _onboardingState extends State<onboarding> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context){return Login();}));
                 },
-                child: Text(S.of(context).skip,
-                  style: TextStyle(
+                child: text(
+                  label: S.of(context).skip,
                       fontSize: 20,
                       color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'NotoSerifGeorgian'
-                  ),),
+                  ),
               ),
             ),
             Expanded(
@@ -112,14 +111,10 @@ class _onboardingState extends State<onboarding> {
                       height: 50,
                       width: 120,
                       child: Center(
-                        child: Text(
-                            S.of(context).start,
-                          style: TextStyle(
+                        child: text(
+                            label:S.of(context).start,
                               fontSize: 20,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'NotoSerifGeorgian'
-                          ),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),

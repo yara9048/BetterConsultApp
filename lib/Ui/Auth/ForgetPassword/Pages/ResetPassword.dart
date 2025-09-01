@@ -59,7 +59,12 @@ class _ResetPasswordState extends State<ResetPassword> {
             } else if (provider.errorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(S.of(context).resetFailed),
+                  content: text(
+                    label: S.of(context).resetFailed,
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
               );
               provider.reset();

@@ -296,14 +296,11 @@ class _LoginState extends State<Login> {
                                     ),
                                   );
                                 },
-                                child: Text(
-                                  S.of(context).doforgetPassword,
-                                  style: TextStyle(
+                                child: text(
+                                  label:S.of(context).doforgetPassword,
                                     color: colorScheme.surface.withOpacity(0.4),
                                     fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'NotoSerifGeorgian',
-                                  ),
+
                                 ),
                               ),
                             ),
@@ -356,9 +353,8 @@ class _LoginState extends State<Login> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              Register(email: 'yarayara@gmail.com',)),
-                                    );
+                                          builder: (context) => Emailconfiramtion()));
+                                            //  Register(email:'yaramicrosoft11@gmail.com')));
                                   },
                                   child: text(
                                     label: S.of(context).signup,

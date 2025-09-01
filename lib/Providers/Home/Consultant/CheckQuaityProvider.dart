@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../DIO/DioHelper.dart';
-import '../../../../DIO/EndPoints.dart';
-import '../../../../Models/Home/Consultant/quaityDataModel.dart';
+import '../../../DIO/DioHelper.dart';
+import '../../../DIO/EndPoints.dart';
+import '../../../Models/Home/Consultant/quaityDataModel.dart';
 
 class CheckQuaityProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   List<QualityData> _data = [];
+  bool _isGoodQuality = false;
+  bool get isGoodQuality => _isGoodQuality;
+
+  void setGoodQuality(bool value) {
+    _isGoodQuality = value;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;

@@ -2,23 +2,27 @@ import 'package:flutter/material.dart';
 
 class AllConsultantCard extends StatefulWidget {
   final String name;
+  final String secondName;
+  final String domain;
   final int rate;
   final String specializing;
   final String fee;
   final VoidCallback onTap;
-  final VoidCallback? onDelete;
-  final VoidCallback? onFavoriteToggle;
+  final Future<void> Function()? onAddFavorite;   // new
+  final Future<void> Function()? onRemoveFavorite; // new
   final bool isFavoriteInitial;
 
   const AllConsultantCard({
     Key? key,
     required this.name,
+    required this.secondName,
     required this.rate,
+    required this.domain,
     required this.specializing,
     required this.fee,
     required this.onTap,
-    this.onDelete,
-    this.onFavoriteToggle,
+    this.onAddFavorite,
+    this.onRemoveFavorite,
     this.isFavoriteInitial = false,
   }) : super(key: key);
 
@@ -35,6 +39,18 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
     isFavorite = widget.isFavoriteInitial;
   }
 
+  Future<void> _toggleFavorite() async {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+
+    if (isFavorite && widget.onAddFavorite != null) {
+      await widget.onAddFavorite!();
+    } else if (!isFavorite && widget.onRemoveFavorite != null) {
+      await widget.onRemoveFavorite!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -45,7 +61,7 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
         children: [
           Container(
             width: 300,
-            height: 300,
+            height: 280,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             decoration: BoxDecoration(
               color: theme.colorScheme.onSurface,
@@ -59,8 +75,8 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
               ],
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                SizedBox(height: 10,),
                 ClipOval(
                   child: Container(
                     width: 110,
@@ -77,27 +93,28 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
                     ),
                   ),
                 ),
+                SizedBox(height: 10,),
                 Text(
-                  widget.name,
+                  widget.name +" "+ widget.secondName,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: theme.colorScheme.primary,
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
-                  widget.specializing,
+                  widget.domain+" / "+widget.specializing,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w400,
-                    color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                    color: theme.colorScheme.onPrimary,
                   ),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
+                SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -116,7 +133,7 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
                       ],
                     ),
                     Text(
-                      'Fee ${widget.fee}',
+                      '${widget.fee}\$',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -128,40 +145,19 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
               ],
             ),
           ),
-          // Favorite Icon
+          // Favorite (Add/Remove)
           Positioned(
             top: 10,
-            right: 40,
+            right: 10,
             child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  isFavorite = !isFavorite;
-                });
-                if (widget.onFavoriteToggle != null) {
-                  widget.onFavoriteToggle!();
-                }
-              },
+              onTap: _toggleFavorite,
               child: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
                 color: theme.colorScheme.primary,
-                size: 20,
+                size: 22,
               ),
             ),
           ),
-          // Delete Icon
-          if (widget.onDelete != null)
-            Positioned(
-              top: 10,
-              right: 10,
-              child: GestureDetector(
-                onTap: widget.onDelete,
-                child: Icon(
-                  Icons.delete_outline,
-                  color: Colors.redAccent,
-                  size: 20,
-                ),
-              ),
-            ),
         ],
       ),
     );

@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-QualityData qualityDataFromJson(String str) => QualityData.fromJson(json.decode(str));
+QualityData qualityDataFromJson(String str) =>
+    QualityData.fromJson(json.decode(str));
 
 String qualityDataToJson(QualityData data) => json.encode(data.toJson());
 
@@ -77,7 +78,7 @@ class Results {
 }
 
 class AudioIssues {
-  int clipRatio;
+  double clipRatio;
   double avgSpectralFlatness;
   String status;
 
@@ -88,8 +89,8 @@ class AudioIssues {
   });
 
   factory AudioIssues.fromJson(Map<String, dynamic> json) => AudioIssues(
-    clipRatio: json["clip_ratio"],
-    avgSpectralFlatness: json["avg_spectral_flatness"]?.toDouble(),
+    clipRatio: (json["clip_ratio"] as num).toDouble(),
+    avgSpectralFlatness: (json["avg_spectral_flatness"] as num).toDouble(),
     status: json["status"],
   );
 
@@ -111,7 +112,7 @@ class AudioLoudness {
 
   factory AudioLoudness.fromJson(Map<String, dynamic> json) => AudioLoudness(
     status: json["status"],
-    valueDbfs: json["value_dbfs"]?.toDouble(),
+    valueDbfs: (json["value_dbfs"] as num).toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -121,7 +122,7 @@ class AudioLoudness {
 }
 
 class BlackScreen {
-  int blackFrameRatio;
+  double blackFrameRatio;
   String status;
 
   BlackScreen({
@@ -130,7 +131,7 @@ class BlackScreen {
   });
 
   factory BlackScreen.fromJson(Map<String, dynamic> json) => BlackScreen(
-    blackFrameRatio: json["black_frame_ratio"],
+    blackFrameRatio: (json["black_frame_ratio"] as num).toDouble(),
     status: json["status"],
   );
 
@@ -141,7 +142,7 @@ class BlackScreen {
 }
 
 class Blurriness {
-  int blurryFrameRatio;
+  double blurryFrameRatio;
   String status;
 
   Blurriness({
@@ -150,7 +151,7 @@ class Blurriness {
   });
 
   factory Blurriness.fromJson(Map<String, dynamic> json) => Blurriness(
-    blurryFrameRatio: json["blurry_frame_ratio"],
+    blurryFrameRatio: (json["blurry_frame_ratio"] as num).toDouble(),
     status: json["status"],
   );
 
@@ -167,9 +168,10 @@ class FaceConsistency {
     required this.error,
   });
 
-  factory FaceConsistency.fromJson(Map<String, dynamic> json) => FaceConsistency(
-    error: json["error"],
-  );
+  factory FaceConsistency.fromJson(Map<String, dynamic> json) =>
+      FaceConsistency(
+        error: json["error"],
+      );
 
   Map<String, dynamic> toJson() => {
     "error": error,
@@ -186,7 +188,7 @@ class FrameRate {
   });
 
   factory FrameRate.fromJson(Map<String, dynamic> json) => FrameRate(
-    fps: json["fps"]?.toDouble(),
+    fps: (json["fps"] as num).toDouble(),
     status: json["status"],
   );
 
@@ -217,8 +219,8 @@ class Resolution {
 }
 
 class Silence {
-  int silentPeriods;
-  int totalSilenceSeconds;
+  double silentPeriods;
+  double totalSilenceSeconds;
   String status;
 
   Silence({
@@ -228,8 +230,8 @@ class Silence {
   });
 
   factory Silence.fromJson(Map<String, dynamic> json) => Silence(
-    silentPeriods: json["silent_periods"],
-    totalSilenceSeconds: json["total_silence_seconds"],
+    silentPeriods: (json["silent_periods"] as num).toDouble(),
+    totalSilenceSeconds: (json["total_silence_seconds"] as num).toDouble(),
     status: json["status"],
   );
 
@@ -248,7 +250,7 @@ class Snr {
   });
 
   factory Snr.fromJson(Map<String, dynamic> json) => Snr(
-    snrDb: json["snr_db"]?.toDouble(),
+    snrDb: (json["snr_db"] as num).toDouble(),
   );
 
   Map<String, dynamic> toJson() => {

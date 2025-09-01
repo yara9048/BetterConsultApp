@@ -13,7 +13,7 @@ class SearchProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   List<SearchModel> get results => _results;
 
-  Future<void> getFavorite({required String query}) async {
+  Future<void> search({required String query}) async {
     _isLoading = true;
     _errorMessage = null;
     _results = [];

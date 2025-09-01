@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled6/Ui/Auth/Register/Compoenets/text.dart';
 
 class mainWidget extends StatelessWidget {
   final String image;
@@ -31,14 +32,10 @@ class mainWidget extends StatelessWidget {
           ),
           SizedBox(height: 30),
           // Title
-          Text(
-            title,
-            style: TextStyle(
+          text(
+            label:title,
               color: Theme.of(context).colorScheme.primary,
               fontSize: 24,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'NotoSerifGeorgian'
-            ),
           ),
           SizedBox(height: 15),
           // Description

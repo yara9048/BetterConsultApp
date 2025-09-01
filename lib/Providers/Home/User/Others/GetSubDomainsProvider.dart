@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
-import '../../../../Models/Home/User/NavBar/GeetSubDomainsModel.dart';
+import '../../../../Models/Home/User/Others/GeetSubDomainsModel.dart';
 
 class GetSubDomainsProvider with ChangeNotifier {
   bool _isLoading = false;

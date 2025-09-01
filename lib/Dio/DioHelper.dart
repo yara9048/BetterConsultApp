@@ -7,7 +7,7 @@ class DioHelper {
 
     _dio = Dio(
       BaseOptions(
-        receiveTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(hours: 10000),
       ),
     );
   }
@@ -16,9 +16,12 @@ class DioHelper {
     required String url,
     Map<String, dynamic>? query,
     Map<String, dynamic>? headers,
+    dynamic? data,
+
   }) async {
     return await _dio.get(
       url,
+      data: data,
       queryParameters: query,
       options: Options(headers: headers),
     );

@@ -37,8 +37,9 @@ class ConsultantReviewProvider with ChangeNotifier {
           'Authorization': 'Bearer $token',
         },
       );
-
-      if (response.statusCode == 200) {
+      print(response.data);
+      print(response.statusCode);
+      if (response.statusCode == 201) {
         _success = true;
         print("added");
       } else if (response.statusCode == 400) {

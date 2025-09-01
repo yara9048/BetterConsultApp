@@ -6,6 +6,7 @@ class ChatHistoryCard extends StatelessWidget {
   final String content;
   final String timestamp;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   const ChatHistoryCard({
     super.key,
@@ -14,6 +15,7 @@ class ChatHistoryCard extends StatelessWidget {
     required this.content,
     required this.timestamp,
     required this.onTap,
+    required this.onDelete,
   });
 
   @override
@@ -24,7 +26,7 @@ class ChatHistoryCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 0, 16),
         decoration: BoxDecoration(
           color: theme.colorScheme.onSurface,
           borderRadius: BorderRadius.circular(12),
@@ -41,25 +43,38 @@ class ChatHistoryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
               children: [
-                Text(
-                  name,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NotoSerifGeorgian',
-                    color: Theme.of(context).colorScheme.primary
+                Expanded(
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'NotoSerifGeorgian',
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
                 ),
+                SizedBox(width: 30,),
+
                 Text(
                   timestamp,
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: theme.colorScheme.primary,
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: theme.colorScheme.primary,size: 20,),
+                  onPressed: onDelete,
+                  tooltip: "Delete",
                 ),
               ],
             ),
+
             const SizedBox(height: 4),
+
             Text(
               specializing,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -67,21 +82,25 @@ class ChatHistoryCard extends StatelessWidget {
                 fontStyle: FontStyle.italic,
               ),
             ),
+
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  content,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color:Theme.of(context).colorScheme.onPrimary,
+                Expanded(
+                  child: Text(
+                    content,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: theme.colorScheme.onPrimary,
+                    ),
                   ),
                 ),
-                Icon(Icons.chevron_right,color: Theme.of(context).colorScheme.onPrimary,)
+                Icon(
+                  Icons.chevron_right,
+                  color: theme.colorScheme.onPrimary,
+                )
               ],
             ),
-
           ],
         ),
       ),

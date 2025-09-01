@@ -21,7 +21,6 @@ class _FavoriteState extends State<Favorite> {
   @override
   void initState() {
     super.initState();
-    // Fetch favorites when the widget is first built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<GetFavorite>(context, listen: false).getFavorite();
     });
@@ -49,122 +48,95 @@ class _FavoriteState extends State<Favorite> {
           ),
         ),
       ),
-      body: Consumer<GetFavorite>(
-        builder: (context, provider, child) {
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (provider.errorMessage != null) {
-            return Center(
-              child: Text(
-                provider.errorMessage!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            );
-          } else if (provider.favorites.isEmpty) {
-            return Center(
-              child: Text(
-                'Favorite is empty',
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            );
-          } else {
-            return GridView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: provider.favorites.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.7,
-              ),
-              itemBuilder: (context, index) {
-                final consultant = provider.favorites[index];
-                return AllConsultantCard(
-                  name: consultant.location,
-                  rate: consultant.rating,
-                  specializing: consultant.location,
-                  fee: consultant.cost.toString(),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ConsultantDetails(id: consultant.id),
-                      ),
-                    );
-                  },
-                  isFavoriteInitial: true,
-                  onFavoriteToggle: () async {
-                    final provider =
-                    Provider.of<AddToFavoriteProvider>(context, listen: false);
-                    await provider.addToFavorite(consultant.id);
-                    if (provider.isVerified) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: text(
-                            label: 'Added to favorites!',
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
-                        ),
-                      );
-                      // Refresh the favorites list
-                      Provider.of<GetFavorite>(context, listen: false).getFavorite();
-                    } else if (provider.errorMessage != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: text(
-                            label: 'Error',
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
-                        ),
-                      );
-                    }
-                  },
-                  onDelete: () async {
-                    final provider =
-                    Provider.of<DeleteFromFavoriteProvider>(context, listen: false);
-                    await provider.deleteFromFavorite(consultant.id);
-                    if (provider.isVerified) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: text(
-                            label: 'Removed from favorites!',
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
-                        ),
-                      );
-                      // Refresh the favorites list
-                      Provider.of<GetFavorite>(context, listen: false).getFavorite();
-                    } else if (provider.errorMessage != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: text(
-                            label: 'Error',
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-            );
-          }
+      body: RefreshIndicator(
+        color: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.onSurface,
+        onRefresh: () async {
+          await Provider.of<GetFavorite>(context, listen: false).getFavorite();
         },
-      ),
-    );
-  }
+        child: Consumer<GetFavorite>(
+          builder: (context, provider, child) {
+            if (provider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (provider.errorMessage != null) {
+              return Center(
+                child: Text(
+                  provider.errorMessage!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              );
+            } else if (provider.favorites.isEmpty) {
+              return Center(
+                child: text(
+                  label: 'Favorite is empty',
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.primary,
+                ));
+            } else {
+              return GridView.builder(
+                padding: const EdgeInsets.all(12),
+                itemCount: provider.favorites.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.7,
+                ),
+                itemBuilder: (context, index) {
+                  final consultant = provider.favorites[index];
+                  return AllConsultantCard(
+                    secondName: consultant.lastName,
+                    name: consultant.firstName,
+                    rate: consultant.rating,
+                    domain: consultant.domainName,
+                    specializing: consultant.subDomainName ,
+                    fee: consultant.cost.toString(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ConsultantDetails(
+                            id: consultant.id,
+                          ),
+                        ),
+                      );
+                    },
+                    isFavoriteInitial: consultant.isFavorite,
+                    onAddFavorite: () async {
+                      final provider = Provider.of<AddToFavoriteProvider>(context, listen: false);
+                      await provider.addToFavorite(consultant.id);
+                      if (provider.isVerified) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: text(
+                              label:'Added to favorites!',
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                        );
+                      }
+                    },
+                    onRemoveFavorite: () async {
+                      final provider = Provider.of<DeleteFromFavoriteProvider>(context, listen: false);
+                      await provider.deleteFromFavorite(consultant.id);
+                      if (provider.isVerified) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: text(
+                              label:'Removed from favorites!',
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                        );
+                      }
+                    },
+                  );
+          });}}),
+      ));}
 
   bool isArabic() {
     return Intl.getCurrentLocale() == 'ar';

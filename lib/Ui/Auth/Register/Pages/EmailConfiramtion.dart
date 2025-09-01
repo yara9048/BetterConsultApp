@@ -205,7 +205,14 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
                             onPressed: () {
                               if (_emailController.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(S.of(context).emailHint)),
+                                  SnackBar(
+                                    content: text(
+                                      label:S.of(context).emailHint,
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                    ),
+                                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                                  ),
                                 );
                                 return;
                               }

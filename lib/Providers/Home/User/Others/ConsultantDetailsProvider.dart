@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
-import '../../../../Models/Home/User/NavBar/ConsultantDetailsModel.dart';
-import '../../../../Models/Home/User/NavBar/GetAllConsultant.dart';
+import '../../../../Models/Home/User/Others/ConsultantDetailsModel.dart';
+import '../../../../Models/Home/User/Others/GetAllConsultant.dart';
 
 class ConsultantDetailsProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -34,7 +34,6 @@ class ConsultantDetailsProvider with ChangeNotifier {
       print('Status code: ${response.statusCode}');
       print('Response data type: ${response.data.runtimeType}');
       print('Response data: ${response.data}');
-      print('--------------------');
       if (response.statusCode == 200) {
         final data = response.data;
 

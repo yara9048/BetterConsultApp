@@ -34,7 +34,14 @@ class _ForgetPassState extends State<ForgetPass> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (provider.isSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(S.of(context).sendOTPSnackBar)),
+                SnackBar(
+                  content: text(
+                    label:S.of(context).sendOTPSnackBar,
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
               );
               Navigator.pushReplacement(
                 context,
@@ -45,7 +52,14 @@ class _ForgetPassState extends State<ForgetPass> {
               provider.reset();
             } else if (provider.errorMessage != null && !provider.isLoading) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(S.of(context).sendOTPFailed)),
+                SnackBar(
+                  content: text(
+                    label:S.of(context).sendOTPFailed,
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
               );
               provider.reset();
             }
@@ -207,8 +221,15 @@ class _ForgetPassState extends State<ForgetPass> {
                                   onPressed: () {
                                     if (_emailController.text.isEmpty) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(S.of(context).emailValidation1)),
-                                      );
+                                        SnackBar(
+                                          content: text(
+                                            label:S.of(context).emailValidation1,
+                                            fontSize: 14,
+                                            color: Theme.of(context).colorScheme.onSurface,
+                                          ),
+                                          backgroundColor: Theme.of(context).colorScheme.secondary,
+                                        ),
+                                                                          );
                                       return;
                                     }
                                     provider.sendOTP(_emailController.text.trim());

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../generated/l10n.dart';
 import '../../../main.dart';
+import '../Components/SearchBarWithDropdown.dart';
 import '../Components/SettingNotificationsWidget.dart';
 import '../Components/ThemeLanguagePopup.dart';
 import '../Pages/Notifications.dart';
@@ -28,7 +29,7 @@ class _HomeState extends State<Home> {
   String searchQuery = '';
   TextEditingController searchController = TextEditingController();
 
-  String? name; // Now nullable
+  String? name;
 
   @override
   void initState() {
@@ -59,13 +60,12 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Row(
                 children: [
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      "${S.of(context).welcome}\n $name",
+                      "${S.of(context).welcome},\n $name",
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w600,
@@ -109,53 +109,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Search bar
-              Container(
-                decoration: BoxDecoration(
-                  color: colors.onSurface,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: (value) => setState(() => searchQuery = value),
-                  decoration: InputDecoration(
-                    hintText: S.of(context).searchHint,
-                    hintStyle: TextStyle(
-                      color: colors.onPrimary.withOpacity(0.7),
-                      fontFamily: 'NotoSerifGeorgian',
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    prefixIcon: Icon(Icons.search, color: colors.onPrimary),
-                    suffixIcon: searchQuery.isNotEmpty
-                        ? IconButton(
-                      icon: Icon(Icons.clear, color: colors.onPrimary),
-                      onPressed: () {
-                        searchController.clear();
-                        setState(() => searchQuery = '');
-                      },
-                    )
-                        : null,
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                    filled: true,
-                    fillColor: colors.onSurface.withOpacity(0.05),
-                  ),
-                  style: TextStyle(
-                    color: colors.secondary,
-                    fontFamily: 'NotoSerifGeorgian',
-                  ),
-                  cursorColor: colors.primary,
-                ),
-              ),
+              const SearchBarWithDropdown(),
               const SizedBox(height: 24),
 
               Divider(color: colors.onPrimary, thickness: 1),

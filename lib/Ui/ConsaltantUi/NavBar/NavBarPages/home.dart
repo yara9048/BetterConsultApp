@@ -75,7 +75,7 @@ class _HomeConsState extends State<HomeCons> {
                      timestamp: 'Jul 30 • 3:14 PM',
                      onTap: () {
                        // Navigate to chat screen
-                     },
+                     }, onDelete: () {  },
                    );
                  },
                ),

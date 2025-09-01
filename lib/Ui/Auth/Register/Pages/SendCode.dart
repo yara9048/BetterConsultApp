@@ -57,7 +57,6 @@ class _SendCodeState extends State<SendCode> {
             });
           }
 
-          /// Handle success state safely
           if (provider.isVerified) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -225,8 +224,7 @@ class _SendCodeState extends State<SendCode> {
                                 ? null
                                 : () async {
                               if (_otpCode.length < 6) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
                                       S.of(context).OTPValidation,

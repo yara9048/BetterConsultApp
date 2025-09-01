@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
 import '../../../../Models/Home/User/NavBar/FavoriteModel.dart';
-import '../../../../Models/Home/User/NavBar/GetAllConsultant.dart';
+import '../../../../Models/Home/User/Others/GetAllConsultant.dart';
 
 class GetFavorite with ChangeNotifier {
   bool _isLoading = false;

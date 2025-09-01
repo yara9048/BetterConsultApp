@@ -98,13 +98,19 @@ class _RegisterState extends State<Register> {
           if (provider.isSuccess) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               provider.reset();
-              final prefs = await SharedPreferences.getInstance();
-              final role = prefs.getString('user_role');
-              Navigator.pushReplacement(
+              //final prefs = await SharedPreferences.getInstance();
+              //final role = prefs.getString('user_role');
+              print(_isConsultant);
+              if (_isConsultant) {
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (_) => Isconsaltant()),
                 );
-
+              }
+              else {Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => Navbar()),
+              );}
             });
           }
 

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled6/Providers/Home/User/NavBarProviders/ViewProfileProvider.dart';
-import '../../../Models/Home/User/NavBar/DeleteProfile.dart';
 import '../../../Providers/Auth/logoutProvider.dart';
+import '../../../Providers/Home/User/NavBarProviders/DeleteProfileProvider.dart';
+import '../../../Providers/Home/User/NavBarProviders/EditProfile.dart';
 import '../../../generated/l10n.dart';
 import '../../../main.dart';
 import '../../Auth/Login/pages/login.dart';
@@ -13,7 +14,6 @@ import '../Components/InfoCard.dart';
 import '../Components/ProfileItemRow.dart';
 import '../Components/ProfileItemRow2.dart';
 import '../Components/SectionHeader.dart';
-import '../Components/ThemeLanguagePopup.dart';
 import '../Components/_buildCompactDropdown.dart';
 import '../Pages/Notifications.dart';
 
@@ -31,7 +31,6 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    // fetch profile once page is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ViewProfileProvider>(context, listen: false).fetchProfile();
     });
@@ -55,18 +54,20 @@ class _ProfileState extends State<Profile> {
             logoutProvider.reset();
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return Login();
-                },
-              ),
+              MaterialPageRoute(builder: (context) => Login()),
             );
           } else if (logoutProvider.errorMessage != null) {
             final msg = logoutProvider.errorMessage!;
             logoutProvider.reset();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(msg)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: text(
+                label:msg,
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+            ),
+            );
           }
         });
 
@@ -86,9 +87,7 @@ class _ProfileState extends State<Profile> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const Notifications(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const Notifications()),
                       );
                     },
                   ),
@@ -106,23 +105,23 @@ class _ProfileState extends State<Profile> {
                   alignment: Alignment.centerRight,
                   child: logoutProvider.isLoading
                       ? Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: theme.colorScheme.onSurface,
-                              strokeWidth: 2,
-                            ),
-                          ),
-                        )
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: theme.colorScheme.onSurface,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  )
                       : IconButton(
-                          onPressed: () => logoutProvider.logout(),
-                          icon: Icon(
-                            Icons.logout,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
+                    onPressed: () => logoutProvider.logout(),
+                    icon: Icon(
+                      Icons.logout,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -163,8 +162,7 @@ class _ProfileState extends State<Profile> {
                                   width: 125,
                                   height: 125,
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary
-                                        .withOpacity(0.1),
+                                    color: theme.colorScheme.primary.withOpacity(0.1),
                                   ),
                                   child: Center(
                                     child: Icon(
@@ -195,21 +193,42 @@ class _ProfileState extends State<Profile> {
                             ProfileItemRow2(
                               icon: Icons.person,
                               label: provider.profile!.firstName,
+                              onTap: () {
+                                showEditPopup(
+                                  context: context,
+                                  fieldType: "firstnaame",
+                                  title: "Edit First Name",
+                                  initialValue: provider.profile!.firstName,
+                                );
+                              },
                             ),
                             ProfileItemRow2(
                               icon: Icons.person_outline,
                               label: provider.profile!.lastName,
+                              onTap: () {
+                                showEditPopup(
+                                  context: context,
+                                  fieldType: "lastname",
+                                  title: "Edit Last Name",
+                                  initialValue: provider.profile!.lastName,
+                                );
+                              },
                             ),
                             ProfileItemRow2(
-                              icon:
-                                  provider.profile!.gender.toLowerCase() ==
-                                      "male"
+                              icon: provider.profile!.gender.toLowerCase() == "male"
                                   ? Icons.male
-                                  : provider.profile!.gender.toLowerCase() ==
-                                        "female"
+                                  : provider.profile!.gender.toLowerCase() == "female"
                                   ? Icons.female
-                                  : Icons.person, // default icon
+                                  : Icons.person,
                               label: provider.profile!.gender,
+                              onTap: () {
+                                showEditPopup(
+                                  context: context,
+                                  fieldType: "gender",
+                                  title: "Edit Gender",
+                                  initialValue: provider.profile!.gender,
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -218,13 +237,24 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(height: 8),
                         InfoCard(
                           children: [
-                            ProfileItemRow(
-                              icon: Icons.email,
-                              label: provider.profile!.email,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: ProfileItemRow(
+                                icon: Icons.email,
+                                label: provider.profile!.email,
+                              ),
                             ),
                             ProfileItemRow2(
                               icon: Icons.phone,
                               label: provider.profile!.phoneNumber,
+                              onTap: () {
+                                showEditPopup(
+                                  context: context,
+                                  fieldType: "phonenumber",
+                                  title: "Edit phone number",
+                                  initialValue: provider.profile!.phoneNumber,
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -236,9 +266,7 @@ class _ProfileState extends State<Profile> {
                             StatefulBuilder(
                               builder: (context, setStateSB) {
                                 return ProfileItemRow(
-                                  icon: isDarkMode
-                                      ? Icons.dark_mode
-                                      : Icons.light_mode,
+                                  icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
                                   label: S.of(context).theme,
                                   trailingWidget: Padding(
                                     padding: EdgeInsets.only(
@@ -254,16 +282,9 @@ class _ProfileState extends State<Profile> {
                                         MyApp.of(context).setTheme(value);
                                       },
                                       activeColor: theme.colorScheme.primary,
-                                      activeTrackColor: theme
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.5),
-                                      inactiveThumbColor:
-                                          theme.colorScheme.primary,
-                                      inactiveTrackColor: theme
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.3),
+                                      activeTrackColor: theme.colorScheme.primary.withOpacity(0.5),
+                                      inactiveThumbColor: theme.colorScheme.primary,
+                                      inactiveTrackColor: theme.colorScheme.primary.withOpacity(0.3),
                                     ),
                                   ),
                                 );
@@ -289,8 +310,7 @@ class _ProfileState extends State<Profile> {
                                             child: Text(
                                               S.of(context).english,
                                               style: TextStyle(
-                                                color:
-                                                    theme.colorScheme.primary,
+                                                color: theme.colorScheme.primary,
                                                 fontFamily: 'NotoSerifGeorgian',
                                               ),
                                             ),
@@ -300,8 +320,7 @@ class _ProfileState extends State<Profile> {
                                             child: Text(
                                               S.of(context).arabic,
                                               style: TextStyle(
-                                                color:
-                                                    theme.colorScheme.primary,
+                                                color: theme.colorScheme.primary,
                                                 fontFamily: 'NotoSerifGeorgian',
                                               ),
                                             ),
@@ -309,9 +328,7 @@ class _ProfileState extends State<Profile> {
                                         ],
                                         onChanged: (val) {
                                           if (val != null) {
-                                            setState(
-                                              () => currentLanguage = val,
-                                            );
+                                            setState(() => currentLanguage = val);
                                           }
                                         },
                                       ),
@@ -323,6 +340,7 @@ class _ProfileState extends State<Profile> {
                           ],
                         ),
                         const SizedBox(height: 24),
+                        // Switch to Consultant
                         Container(
                           margin: const EdgeInsets.only(top: 10),
                           decoration: BoxDecoration(
@@ -344,9 +362,7 @@ class _ProfileState extends State<Profile> {
                                 child: Center(
                                   child: text(
                                     label: S.of(context).switchToConsultant,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -354,11 +370,12 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
+                        // Delete Account
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Theme.of(context).colorScheme.onPrimary),
+                              borderRadius: BorderRadius.circular(12),
+                              color: Theme.of(context).colorScheme.onPrimary),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
@@ -369,10 +386,11 @@ class _ProfileState extends State<Profile> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.delete_forever, color: Theme.of(context).colorScheme.onSurface),
+                                    Icon(Icons.delete_forever,
+                                        color: Theme.of(context).colorScheme.onSurface),
                                     const SizedBox(width: 10),
                                     Text(
-                                      "delete account", // use localization if available
+                                      "delete account",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -398,7 +416,190 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _Confirmation() {
+  Future<void> showEditPopup({
+    required BuildContext context,
+    required String fieldType,
+    required String title,
+    required String initialValue,
+  }) async {
+    final TextEditingController controller = TextEditingController(text: initialValue);
+    TextInputType keyboardType;
+    switch (fieldType.toLowerCase()) {
+      case "firstnaame":
+      case "gender":
+      case "lastname":
+        keyboardType = TextInputType.name;
+        break;
+      case "phonenumber":
+        keyboardType = TextInputType.phone;
+        break;
+      default:
+        keyboardType = TextInputType.text;
+    }
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          backgroundColor: theme.colorScheme.onSurface,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Consumer2<EditProfile, ViewProfileProvider>(
+              builder: (context, editProvider, viewProvider, _) {
+                return StatefulBuilder(
+                  builder: (context, setStateSB) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                            fontFamily: 'NotoSerifGeorgian',
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controller,
+                          keyboardType: keyboardType,
+                          style: TextStyle(
+                            color: theme.colorScheme.surface.withOpacity(0.4),
+                            fontFamily: 'NotoSerifGeorgian',
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Enter $fieldType",
+                            hintStyle: TextStyle(
+                              color: theme.colorScheme.primary,
+                              fontSize: 16,
+                              fontFamily: 'NotoSerifGeorgian',
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: theme.colorScheme.primary),
+                              ),
+                              child: TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(
+                                  S.of(context).cancel,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: theme.colorScheme.primary,
+                                    fontFamily: 'NotoSerifGeorgian',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            // Submit
+                            Container(
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: TextButton(
+                                onPressed: editProvider.isLoading
+                                    ? null
+                                    : () async {
+                                  final newValue = controller.text.trim();
+                                  final profile = viewProvider.profile!;
+                                  final phone = fieldType == "phonenumber"
+                                      ? int.tryParse(newValue) ?? int.parse(profile.phoneNumber)
+                                      : int.parse(profile.phoneNumber);
+                                  final first = fieldType == "firstnaame" ? newValue : profile.firstName;
+                                  final last = fieldType == "lastname" ? newValue : profile.lastName;
+                                  final gender = fieldType == "gender" ? newValue : profile.gender;
+
+                                  await editProvider.editProfile(phone, first, last, gender);
+
+                                  setStateSB(() {});
+
+                                  if (editProvider.isVerified) {
+                                    await viewProvider.fetchProfile();
+                                    Navigator.of(context).pop();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: text(
+                                          label:"Profile updated successfully",
+                                          fontSize: 14,
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ),
+                                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    );
+                                  } else if (editProvider.errorMessage != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: text(
+                                          label:editProvider.errorMessage!,
+                                          fontSize: 14,
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ),
+                                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                                                     );
+                                  }
+                                },
+                                child: editProvider.isLoading
+                                    ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                                    : Text(
+                                  "Submit",
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onSurface,
+                                    fontFamily: 'NotoSerifGeorgian',
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  bool isArabic() {
+    return Intl.getCurrentLocale() == 'ar';
+  }
+
+
+void _Confirmation() {
     showDialog(
       context: context,
       builder: (context) {
@@ -530,6 +731,7 @@ class _ProfileState extends State<Profile> {
       },
     );
   }
+
   void _showDeleteConfirmation(BuildContext context) {
     showDialog(
       context: context,
@@ -541,20 +743,30 @@ class _ProfileState extends State<Profile> {
                 borderRadius: BorderRadius.circular(20),
               ),
               elevation: 12,
-              insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              insetPadding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 24),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .onSurface,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.85,
+                  maxWidth: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.85,
                 ),
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.warning, size: 60, color: Theme.of(context).colorScheme.primary),
+                    Icon(Icons.warning, size: 60, color: Theme
+                        .of(context)
+                        .colorScheme
+                        .primary),
                     const SizedBox(height: 16),
                     Text(
                       "Delete Account",
@@ -562,7 +774,10 @@ class _ProfileState extends State<Profile> {
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'NotoSerifGeorgian',
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -572,7 +787,10 @@ class _ProfileState extends State<Profile> {
                         fontSize: 16,
                         fontFamily: 'NotoSerifGeorgian',
                         fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -580,50 +798,94 @@ class _ProfileState extends State<Profile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Cancel Button
+                        // Cancel button
                         Container(
+                          width: 100,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .primary,
                             ),
                           ),
                           child: TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: Text(S.of(context).cancel),
+                            child: Text(
+                              S
+                                  .of(context)
+                                  .cancel,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary,
+                                fontFamily: 'NotoSerifGeorgian',
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
 
                         // Confirm Delete Button
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Colors.white,
+                        Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .primary,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          onPressed: () async {
-                            await deleteProvider.deleteAccount();
-                            if (deleteProvider.isVerified) {
-                              Navigator.of(context).pop(); // close dialog
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (_) => Login()),
-                                    (route) => false,
-                              );
-                            } else if (deleteProvider.errorMessage != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(deleteProvider.errorMessage!)),
-                              );
-                            }
-                          },
-                          child: deleteProvider.isLoading
-                              ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                              : Text(S.of(context).confirm),
+                          child: TextButton(
+                            onPressed: deleteProvider.isLoading
+                                ? null
+                                : () async {
+                              await deleteProvider.deleteAccount();
+                              if (deleteProvider.isVerified) {
+                                Navigator.of(context).pop(); // close dialog
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => Login()),
+                                      (route) => false,
+                                );
+                              } else if (deleteProvider.errorMessage != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: text(
+                                      label: deleteProvider.errorMessage!,
+                                      fontSize: 14,
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                    ),
+                                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                );
+                              }
+                            },
+                            child: deleteProvider.isLoading
+                                ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            )
+                                : Text(
+                              S
+                                  .of(context)
+                                  .confirm,
+                              style: TextStyle(
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onSurface,
+                                fontFamily: 'NotoSerifGeorgian',
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -635,9 +897,8 @@ class _ProfileState extends State<Profile> {
         );
       },
     );
-  }
 
-  bool isArabic() {
-    return Intl.getCurrentLocale() == 'ar';
-  }
-}
+    bool isArabic() {
+      return Intl.getCurrentLocale() == 'ar';
+    }
+  }}

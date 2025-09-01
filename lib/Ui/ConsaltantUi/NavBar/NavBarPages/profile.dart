@@ -6,6 +6,7 @@ import '../../../../Providers/Auth/logoutProvider.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../main.dart';
 import '../../../Auth/Login/pages/login.dart';
+import '../../../Auth/Register/Compoenets/text.dart';
 import '../../../Home/Components/InfoCard.dart';
 import '../../../Home/Components/ProfileItemRow.dart';
 import '../../../Home/Components/SectionHeader.dart';
@@ -47,7 +48,14 @@ class _ProfileConsState extends State<ProfileCons> {
               final msg = logoutProvider.errorMessage!;
               logoutProvider.reset();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(msg)),
+                SnackBar(
+                  content: text(
+                    label:msg,
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
               );
             }
           });

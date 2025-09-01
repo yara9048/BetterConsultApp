@@ -1,8 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
-import '../../../../Models/Home/User/NavBar/GetAllConsultant.dart';
+import '../../../../Models/Home/User/Others/GetAllConsultant.dart';
 
 class AllConsultantProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -13,7 +14,8 @@ class AllConsultantProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   List<GetAllConsultant> get consultants => _consultants;
 
-  Future<void> fetchConsultant({required domainId, required subDomainId}) async {
+
+  Future<void> fetchConsultants({required int  domainId, required int subDomainId}) async {
     _isLoading = true;
     _errorMessage = null;
     _consultants = [];
@@ -38,23 +40,27 @@ class AllConsultantProvider with ChangeNotifier {
         } else {
           _errorMessage = 'Unexpected response format';
         }
-      }
-      else if (response.statusCode == 404) {
-        _errorMessage = 'No consultants here';
-      }
-      else {
+      } else {
         _errorMessage = 'Failed to fetch consultants (Error ${response.statusCode})';
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        _errorMessage = 'No consultants here';
+      } else if (e.response != null) {
+        _errorMessage = 'Failed to fetch consultants (Error ${e.response?.statusCode})';
+      } else {
+        _errorMessage = 'Network error: ${e.message ?? 'Please check your connection'}';
+      }
+      print('Dio error fetching consultants: $e');
     } catch (e, stacktrace) {
-      _errorMessage = 'Failed to fetch consultants';
-      print('Error fetching consultants: $e');
+      _errorMessage = 'An unexpected error occurred';
+      print('Unexpected error fetching consultants: $e');
       print(stacktrace);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
-
   void reset() {
     _errorMessage = null;
     _consultants = [];

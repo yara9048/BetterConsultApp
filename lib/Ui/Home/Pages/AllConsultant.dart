@@ -1,14 +1,16 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled6/Providers/Home/User/NavBarProviders/DeleteFromFavoriiteProvider.dart';
-import '../../../../Models/Home/User/NavBar/GeetSubDomainsModel.dart';
+import '../../../Models/Home/User/Others/GeetSubDomainsModel.dart';
 import '../../../Providers/Home/User/NavBarProviders/AddToFavoriteProvider.dart';
-import '../../../Providers/Home/User/NavBarProviders/GetSubDomainsProvider.dart';
+import '../../../Providers/Home/User/Others/GetSubDomainsProvider.dart';
 import '../../../Providers/Home/User/Others/AllConultandProvider.dart';
 import '../../../generated/l10n.dart';
 import '../../Auth/Register/Compoenets/text.dart';
 import '../Components/AllConsultantCard.dart';
 import 'ConsultantDetails.dart';
+import 'GeneralChat.dart';
 
 class AllConsultant extends StatefulWidget {
   final int id;
@@ -24,7 +26,7 @@ class _AllConsultantState extends State<AllConsultant> {
   late AllConsultantProvider _consultantProvider;
 
   int? selectedSubDomainId;
-  String? selectedSubDomainName;
+  String selectedSubDomainName = '';
 
   @override
   void initState() {
@@ -37,7 +39,7 @@ class _AllConsultantState extends State<AllConsultant> {
       if (_subDomainsProvider.domains.isNotEmpty) {
         selectedSubDomainId = _subDomainsProvider.domains[0].id;
         selectedSubDomainName = _subDomainsProvider.domains[0].name;
-        _consultantProvider.fetchConsultant(
+        _consultantProvider.fetchConsultants(
           domainId: widget.id,
           subDomainId: selectedSubDomainId!,
         );
@@ -51,10 +53,12 @@ class _AllConsultantState extends State<AllConsultant> {
       selectedSubDomainName = subDomain.name;
     });
 
-    _consultantProvider.fetchConsultant(
+    _consultantProvider.fetchConsultants(
       domainId: widget.id,
       subDomainId: selectedSubDomainId!,
     );
+    print(selectedSubDomainId);
+
   }
 
   @override
@@ -77,6 +81,53 @@ class _AllConsultantState extends State<AllConsultant> {
           ),
         ),
       ),
+      bottomNavigationBar: Container(
+      height: 80,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Center(
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.primary,
+              fontFamily: 'NotoSerifGeorgian',
+            ),
+            children: [
+              TextSpan(
+                text: S.of(context).generalChat1,
+              ),
+              TextSpan(
+                text: S.of(context).generalChat2,
+              ),
+              TextSpan(
+                text: S.of(context).generalChat3,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context){return Generalchat();}));
+                  },
+              ),
+              TextSpan(
+                text: S.of(context).generalChat4,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
         child: Column(
@@ -91,14 +142,12 @@ class _AllConsultantState extends State<AllConsultant> {
                   );
                 } else if (provider.errorMessage != null) {
                   return Center(
-                    child: Text(provider.errorMessage!,
-                        style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                    child: text(label:provider.errorMessage!,
+                    color: Theme.of(context).colorScheme.primary,fontSize: 16,),
                   );
                 } else {
                   final subDomains = provider.domains;
-
                   if (subDomains.isEmpty) return const SizedBox();
-
                   return SizedBox(
                     height: 40,
                     child: ListView.separated(
@@ -140,18 +189,13 @@ class _AllConsultantState extends State<AllConsultant> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (provider.errorMessage != null) {
                     return Center(
-                      child: Text(provider.errorMessage!,
-                          style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      child: text(label:provider.errorMessage!,
+                        color: Theme.of(context).colorScheme.primary,fontSize: 16,),
                     );
                   } else if (provider.consultants.isEmpty) {
                     return Center(
-                      child: Text(
-                        'No Consultants Found',
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
+                      child: text(label:provider.errorMessage!,
+                        color: Theme.of(context).colorScheme.primary,fontSize: 16,),
                     );
                   } else {
                     return GridView.builder(
@@ -165,18 +209,24 @@ class _AllConsultantState extends State<AllConsultant> {
                       itemBuilder: (context, index) {
                         final consultant = provider.consultants[index];
                         return AllConsultantCard(
-                          name: consultant.location,
+                          secondName: consultant.lastName,
+                          name: consultant.firstName,
                           rate: consultant.rating,
-                          specializing: widget.name,
+                          domain: widget.name,
+                          specializing: selectedSubDomainName ,
                           fee: consultant.cost.toString(),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ConsultantDetails(id: consultant.id)),
+                              MaterialPageRoute(
+                                builder: (context) => ConsultantDetails(
+                                  id: consultant.id,
+                                ),
+                              ),
                             );
                           },
-                          isFavoriteInitial: false,
-                          onFavoriteToggle: () async {
+                          isFavoriteInitial: consultant.isFavorite,
+                          onAddFavorite: () async {
                             final provider = Provider.of<AddToFavoriteProvider>(context, listen: false);
                             await provider.addToFavorite(consultant.id);
                             if (provider.isVerified) {
@@ -190,20 +240,9 @@ class _AllConsultantState extends State<AllConsultant> {
                                   backgroundColor: Theme.of(context).colorScheme.secondary,
                                 ),
                               );
-                            } else if (provider.errorMessage != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: text(
-                                    label:'Error',
-                                    fontSize: 14,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                                ),
-                              );
                             }
                           },
-                          onDelete: () async {
+                          onRemoveFavorite: () async {
                             final provider = Provider.of<DeleteFromFavoriteProvider>(context, listen: false);
                             await provider.deleteFromFavorite(consultant.id);
                             if (provider.isVerified) {
@@ -216,21 +255,11 @@ class _AllConsultantState extends State<AllConsultant> {
                                   ),
                                   backgroundColor: Theme.of(context).colorScheme.secondary,
                                 ),
-                              );
-                            } else if (provider.errorMessage != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: text(
-                                    label: 'Error',
-                                    fontSize: 14,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                                ),
-                              );
+                                             );
                             }
                           },
                         );
+
 
 
                       },
