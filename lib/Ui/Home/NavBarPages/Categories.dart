@@ -8,7 +8,6 @@ import '../../Auth/Register/Compoenets/text.dart';
 import '../Components/CategoryCard.dart';
 import '../Pages/AllConsultant.dart';
 
-
 class Categories extends StatefulWidget {
   @override
   State<Categories> createState() => _CategoriesState();
@@ -47,42 +46,59 @@ class _CategoriesState extends State<Categories> {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (provider.errorMessage != null) {
-            return SnackBar(
-              content: text(
+            // Show error as a centered text, SnackBar cannot be returned directly
+            return Center(
+              child: text(
                 label: provider.errorMessage!,
-                fontSize: 14,
+                fontSize: 16,
                 color: Theme.of(context).colorScheme.onSurface,
-              ),
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-            );
-          } else if (provider.domains.isEmpty) {
-            return Center(child: text(label: S.of(context).NoCategories,fontSize: 25,color: Theme.of(context).colorScheme.primary,));
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12, top: 12),
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: provider.domains.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 0.8,
-                ),
-                itemBuilder: (context, index) {
-                  final category = provider.domains[index];
-                  return CategoryCard(
-                    name: category.name,
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllConsultant(id: category.id, name: category.name)));
-                      print(category.id);
-                      print(category.name);
-                    },
-                  );
-                },
               ),
             );
           }
+
+          // Filter only approved domains
+          final approvedDomains = provider.domains.where((d) => d.status == 'approved').toList();
+
+          if (approvedDomains.isEmpty) {
+            return Center(
+              child: text(
+                label: S.of(context).NoCategories,
+                fontSize: 25,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(left: 12.0, right: 12, top: 12),
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: approvedDomains.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 0.8,
+              ),
+              itemBuilder: (context, index) {
+                final category = approvedDomains[index];
+                return CategoryCard(
+                  name: category.name,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AllConsultant(
+                          id: category.id,
+                          name: category.name,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          );
         },
       ),
     );

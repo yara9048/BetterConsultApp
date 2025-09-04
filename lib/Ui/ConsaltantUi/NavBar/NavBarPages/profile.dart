@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Providers/Auth/logoutProvider.dart';
+import '../../../../Providers/Home/User/NavBarProviders/DeleteProfileProvider.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../main.dart';
 import '../../../Auth/Login/pages/login.dart';
@@ -123,7 +124,6 @@ class _ProfileConsState extends State<ProfileCons> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile Avatar + Name
                   Center(
                     child: Column(
                       children: [
@@ -205,6 +205,40 @@ class _ProfileConsState extends State<ProfileCons> {
                   ),
 
                   const SizedBox(height: 10),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Theme.of(context).colorScheme.onPrimary),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () => _showDeleteConfirmation(context),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.delete_forever,
+                                  color: Theme.of(context).colorScheme.onSurface),
+                              const SizedBox(width: 10),
+                              Text(
+                                "delete account",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSerifGeorgian',
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),
@@ -213,8 +247,176 @@ class _ProfileConsState extends State<ProfileCons> {
       ),
     );
   }
-  bool isArabic () {
-    return Intl.getCurrentLocale() == 'ar';
-  }
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Consumer<DeleteProfile>(
+          builder: (context, deleteProvider, child) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 12,
+              insetPadding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 24),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .onSurface,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.85,
+                ),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.warning, size: 60, color: Theme
+                        .of(context)
+                        .colorScheme
+                        .primary),
+                    const SizedBox(height: 16),
+                    Text(
+                      "Delete Account",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NotoSerifGeorgian',
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Are you sure you want to delete your personal account forever?",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'NotoSerifGeorgian',
+                        fontWeight: FontWeight.w500,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .primary,
+                            ),
+                          ),
+                          child: TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(
+                              S
+                                  .of(context)
+                                  .cancel,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary,
+                                fontFamily: 'NotoSerifGeorgian',
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
 
-}
+                        Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextButton(
+                            onPressed: deleteProvider.isLoading
+                                ? null
+                                : () async {
+                              await deleteProvider.deleteAccount();
+                              if (deleteProvider.isVerified) {
+                                Navigator.of(context).pop();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => Login()),
+                                      (route) => false,
+                                );
+                              } else if (deleteProvider.errorMessage != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: text(
+                                      label: deleteProvider.errorMessage!,
+                                      fontSize: 14,
+                                      color: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                    backgroundColor: Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .secondary,
+                                  ),
+                                );
+                              }
+                            },
+                            child: deleteProvider.isLoading
+                                ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            )
+                                : Text(
+                              S
+                                  .of(context)
+                                  .confirm,
+                              style: TextStyle(
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onSurface,
+                                fontFamily: 'NotoSerifGeorgian',
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }}
+    bool isArabic() {
+      return Intl.getCurrentLocale() == 'ar';
+    }

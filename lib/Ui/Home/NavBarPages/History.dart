@@ -72,8 +72,9 @@ class _HistoryState extends State<History> {
                 itemBuilder: (context, index) {
                   final chat = provider.chats[index];
                   return ChatHistoryCard(
-                    name: 'Dr. Amira Khaled',
-                    specializing: 'Nutritionist',
+                    name: chat.consultant.user.firstName+' '+chat.consultant.user.lastName,
+                    specializing: chat.consultant.subDomain.toString(),
+                    domain: chat.consultant.domain.toString(),
                     content:chat.title,
                     timestamp: formatDate(chat.createdAt.toString()),
                     onTap: () {

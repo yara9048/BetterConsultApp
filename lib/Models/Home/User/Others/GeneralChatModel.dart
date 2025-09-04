@@ -1,42 +1,30 @@
 // To parse this JSON data, do
 //
-//     final chatHistoryModel = chatHistoryModelFromJson(jsonString);
+//     final generalChatModel = generalChatModelFromJson(jsonString);
 
 import 'dart:convert';
 
-List<ChatHistoryModel> chatHistoryModelFromJson(String str) => List<ChatHistoryModel>.from(json.decode(str).map((x) => ChatHistoryModel.fromJson(x)));
+GeneralChatModel generalChatModelFromJson(String str) => GeneralChatModel.fromJson(json.decode(str));
 
-String chatHistoryModelToJson(List<ChatHistoryModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String generalChatModelToJson(GeneralChatModel data) => json.encode(data.toJson());
 
-class ChatHistoryModel {
-  int id;
-  String title;
-  Consultant consultant;
-  DateTime createdAt;
-  DateTime modifiedAt;
+class GeneralChatModel {
+  String question;
+  List<Consultant> consultants;
 
-  ChatHistoryModel({
-    required this.id,
-    required this.title,
-    required this.consultant,
-    required this.createdAt,
-    required this.modifiedAt,
+  GeneralChatModel({
+    required this.question,
+    required this.consultants,
   });
 
-  factory ChatHistoryModel.fromJson(Map<String, dynamic> json) => ChatHistoryModel(
-    id: json["id"],
-    title: json["title"],
-    consultant: Consultant.fromJson(json["consultant"]),
-    createdAt: DateTime.parse(json["created_at"]),
-    modifiedAt: DateTime.parse(json["modified_at"]),
+  factory GeneralChatModel.fromJson(Map<String, dynamic> json) => GeneralChatModel(
+    question: json["question"],
+    consultants: List<Consultant>.from(json["consultants"].map((x) => Consultant.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-    "consultant": consultant.toJson(),
-    "created_at": createdAt.toIso8601String(),
-    "modified_at": modifiedAt.toIso8601String(),
+    "question": question,
+    "consultants": List<dynamic>.from(consultants.map((x) => x.toJson())),
   };
 }
 
@@ -53,8 +41,8 @@ class Consultant {
   DateTime addedAt;
   double rating;
   int reviewCount;
-  int domain;
-  int subDomain;
+  int? domain;
+  int? subDomain;
   int validatedBy;
   dynamic photo;
 

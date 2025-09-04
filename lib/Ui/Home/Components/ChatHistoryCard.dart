@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ChatHistoryCard extends StatelessWidget {
   final String name;
+  final String domain;
   final String specializing;
   final String content;
   final String timestamp;
@@ -11,6 +12,7 @@ class ChatHistoryCard extends StatelessWidget {
   const ChatHistoryCard({
     super.key,
     required this.name,
+    required this.domain,
     required this.specializing,
     required this.content,
     required this.timestamp,
@@ -58,7 +60,6 @@ class ChatHistoryCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 30,),
-
                 Text(
                   timestamp,
                   style: theme.textTheme.labelSmall?.copyWith(
@@ -73,10 +74,8 @@ class ChatHistoryCard extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 4),
-
             Text(
-              specializing,
+              domain+" / "+specializing,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onPrimary,
                 fontStyle: FontStyle.italic,

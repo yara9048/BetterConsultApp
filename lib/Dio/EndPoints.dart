@@ -1,5 +1,5 @@
 class Endpoints {
-  static const String baseUrl = 'http://10.109.94.131:8000/api/';
+  static const String baseUrl = 'http://10.209.132.112:8000/api/';
   static const String login = 'auth/login/';
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';
@@ -22,4 +22,7 @@ class Endpoints {
   static const String deleteChat = 'chat/delete/';
   static const String chatHistory = 'chat/get_user_chats/';
   static const String chatHistoryContent = 'chat/messages/';
+  static const String generalChat = 'chat/question_consultants/';
+  static const String Vtt = 'transcribe/';
+
 }

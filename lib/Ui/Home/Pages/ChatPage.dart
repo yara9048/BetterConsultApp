@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../Providers/Home/User/Others/ChatProvider.dart';
+import '../../../Providers/Home/User/Others/VoiceProvider.dart';
 import '../../../generated/l10n.dart';
 import '../Components/ChatBubble.dart';
 
@@ -19,6 +21,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late bool chatted = false;
+
   bool isArabic() => Intl.getCurrentLocale() == 'ar';
 
   void _scrollToBottom() {
@@ -33,22 +36,29 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  Future<void> _sendMessage(ChatProvider provider, String text) async {
-    if (text.trim().isEmpty) return;
-    await provider.chat(widget.consultantId.toString(), text);
+  Future<void> _sendMessage(ChatProvider chatProvider) async {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+
+    await chatProvider.chat(widget.consultantId.toString(), text);
     _controller.clear();
     chatted = true;
+
     final prefs = await SharedPreferences.getInstance();
     final id = prefs.getString('user_id');
     await prefs.setBool('chatted_${widget.consultantId}_$id', chatted);
     _scrollToBottom();
   }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ChatProvider(),
-      child: Consumer<ChatProvider>(
-        builder: (context, provider, _) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => VoiceProvider()),
+      ],
+      child: Consumer2<ChatProvider, VoiceProvider>(
+        builder: (context, chatProvider, voiceProvider, _) {
           return Scaffold(
             backgroundColor: const Color(0xfff5f7fa),
             appBar: AppBar(
@@ -77,38 +87,41 @@ class _ChatPageState extends State<ChatPage> {
             body: Column(
               children: [
                 Expanded(
-                  child: provider.isLoading && provider.chats.isEmpty
+                  child: chatProvider.isLoading && chatProvider.chats.isEmpty
                       ? const Center(child: CircularProgressIndicator())
                       : ListView.builder(
                     controller: _scrollController,
-                      itemCount: provider.chats.length,
-                      itemBuilder: (context, index) {
-                        final chat = provider.chats[index];
-                        final userMessage = chat.userMessage;
-                        final consultantMessage = chat.consultantMessage;
+                    itemCount: chatProvider.chats.length,
+                    itemBuilder: (context, index) {
+                      final chat = chatProvider.chats[index];
+                      final userMessage = chat.userMessage;
+                      final consultantMessage = chat.consultantMessage;
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (userMessage != null)
-                              ChatBubble(text: userMessage.text, isUser: true),
-                            if (consultantMessage != null)
-                              ChatBubble(text: consultantMessage.text, isUser: false),
-                          ],
-                        );
-                      }
-
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (userMessage != null)
+                            userMessage.text.startsWith("[audio]")
+                                ? _buildAudioBubble(userMessage.text, true, voiceProvider)
+                                : ChatBubble(text: userMessage.text, isUser: true),
+                          if (consultantMessage != null)
+                            consultantMessage.text.startsWith("[audio]")
+                                ? _buildAudioBubble(consultantMessage.text, false, voiceProvider)
+                                : ChatBubble(text: consultantMessage.text, isUser: false),
+                        ],
+                      );
+                    },
                   ),
                 ),
-                if (provider.errorMessage != null)
+                if (chatProvider.errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      provider.errorMessage!,
+                      chatProvider.errorMessage!,
                       style: const TextStyle(color: Colors.red),
                     ),
                   ),
-                _buildInputArea(provider),
+                _buildInputArea(chatProvider, voiceProvider),
               ],
             ),
           );
@@ -117,7 +130,34 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildInputArea(ChatProvider provider) {
+  Widget _buildAudioBubble(String text, bool isUser, VoiceProvider voiceProvider) {
+    final path = text.replaceFirst("[audio]", "");
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isUser
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+              : Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.play_arrow, color: Colors.green),
+              onPressed: () => voiceProvider.playAudio(path),
+            ),
+            const Text("Audio Message"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputArea(ChatProvider chatProvider, VoiceProvider voiceProvider) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
@@ -132,7 +172,7 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: TextField(
               controller: _controller,
-              onSubmitted: (_) => _sendMessage(provider, _controller.text),
+              onSubmitted: (_) => _sendMessage(chatProvider),
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontSize: 16,
@@ -152,6 +192,28 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
           ),
+          // Mic button
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: voiceProvider.isRecording
+                  ? Colors.red
+                  : Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(
+                voiceProvider.isRecording ? Icons.stop : Icons.mic,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                voiceProvider.isRecording
+                    ? voiceProvider.stopRecording()
+                    : voiceProvider.startRecording();
+              },
+            ),
+          ),
+          // Send button
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
@@ -166,7 +228,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
             child: IconButton(
               icon: const Icon(Icons.send, color: Colors.white, size: 22),
-              onPressed: () => _sendMessage(provider, _controller.text),
+              onPressed: () => _sendMessage(chatProvider),
             ),
           ),
         ],

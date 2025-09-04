@@ -798,7 +798,6 @@ void _Confirmation() {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Cancel button
                         Container(
                           width: 100,
                           decoration: BoxDecoration(
@@ -830,7 +829,6 @@ void _Confirmation() {
                         ),
                         const SizedBox(width: 12),
 
-                        // Confirm Delete Button
                         Container(
                           width: 100,
                           decoration: BoxDecoration(
@@ -846,7 +844,7 @@ void _Confirmation() {
                                 : () async {
                               await deleteProvider.deleteAccount();
                               if (deleteProvider.isVerified) {
-                                Navigator.of(context).pop(); // close dialog
+                                Navigator.of(context).pop();
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(builder: (_) => Login()),

@@ -42,17 +42,19 @@ class GetDomainsProvider with ChangeNotifier {
           _domains = (response.data as List)
               .map((item) => GetDomainsModel.fromJson(item))
               .toList();
-        } else if (response.data is Map) {
+        } else if (response.data is Map && response.data['data'] != null) {
           _domains = (response.data['data'] as List)
               .map((item) => GetDomainsModel.fromJson(item))
               .toList();
+        } else {
+          _errorMessage = 'Unexpected response format';
         }
       } else {
         _errorMessage = 'Failed to fetch domains';
       }
     } catch (e) {
       _errorMessage = 'Failed to fetch domains';
-      print(e);
+      print('Error: $e');
     }
 
     _isLoading = false;

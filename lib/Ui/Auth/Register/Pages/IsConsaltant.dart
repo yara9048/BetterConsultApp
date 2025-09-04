@@ -26,9 +26,9 @@ class _IsconsaltantState extends State<Isconsaltant> {
   final _experienceController = TextEditingController();
   final _locationController = TextEditingController();
   final _bioController = TextEditingController();
+  final _domainController = TextEditingController();
+  final _subDomainController = TextEditingController();
 
-  int? selectedDomainId;
-  int? selectedSubDomainId;
   List<PlatformFile> _uploadedFiles = [];
 
   @override
@@ -62,9 +62,6 @@ class _IsconsaltantState extends State<Isconsaltant> {
   @override
   void initState() {
     super.initState();
-    final domainsProvider =
-    Provider.of<GetDomainsProvider>(context, listen: false);
-    domainsProvider.fetchDomains();
   }
 
   @override
@@ -94,110 +91,18 @@ class _IsconsaltantState extends State<Isconsaltant> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionTitle(label: S.of(context).IndustryInformation),
-                    Text(
-                      S.of(context).field,
-                      style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surface
-                              .withOpacity(0.4)),
-                    ),
                     const SizedBox(height: 8),
-                    domainsProvider.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : DropdownButtonFormField<int>(
-                      value: selectedDomainId,
-                      dropdownColor: Theme.of(context).colorScheme.onSurface,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Theme.of(context)
-                            .colorScheme
-                            .surface
-                            .withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 1.2),
-                        ),
-                      ),
-                      hint: Text('selectDomain'),
-                      items: domainsProvider.domains
-                          .map(
-                            (d) => DropdownMenuItem<int>(
-                          value: d.id,
-                              child: text(label: d.name,fontSize: 16,color: Theme.of(context).colorScheme.primary,),
-                        ),
-                      )
-                          .toList(),
-                      onChanged: (val) {
-                        setState(() {
-                          selectedDomainId = val;
-                          selectedSubDomainId = null;
-                        });
-                        if (val != null) {
-                          subDomainsProvider.fetchSubDomains(id: val);
-                        }
-                      },
-                      validator: (value) =>
-                      value == null ? 'fieldRequired' : null,
+                    InputTextField2(
+                      label: S.of(context).field,
+                      controller: _domainController,
+                      icon: Icons.work_outline,
                     ),
 
-                    const SizedBox(height: 16),
-
-                    Text(
-                      S.of(context).specialization,
-                      style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surface
-                              .withOpacity(0.4)),
+                    InputTextField2(
+                      label: S.of(context).specialization,
+                      controller: _subDomainController,
+                      icon: Icons.workspace_premium,
                     ),
-                    const SizedBox(height: 8),
-                    subDomainsProvider.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : DropdownButtonFormField<int>(
-                      value: selectedSubDomainId,
-                      dropdownColor: Theme.of(context).colorScheme.onSurface,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Theme.of(context)
-                            .colorScheme
-                            .surface
-                            .withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 1.2),
-                        ),
-                      ),
-                      hint: Text('selectSubDomain'),
-                      items: subDomainsProvider.domains
-                          .map(
-                            (d) => DropdownMenuItem<int>(
-                          value: d.id,
-                          child: text(label: d.name,fontSize: 16,color: Theme.of(context).colorScheme.primary,),
-                        ),
-                      )
-                          .toList(),
-                      onChanged: (val) {
-                        setState(() {
-                          selectedSubDomainId = val;
-                          print(selectedDomainId);
-                          print(selectedSubDomainId);
-                        });
-                      },
-                      validator: (value) => value == null
-                          ? 'specializationRequired'
-                          : null,
-                    ),
-
-                    const SizedBox(height: 16),
 
                     InputTextField2(
                       label: S.of(context).years,
@@ -213,7 +118,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
                     ),
                     SectionTitle(label: S.of(context).fee),
                     InputTextField2(
-                      label: S.of(context).fee,
+                      label: "Consultation Cost",
                       controller: _costController,
                       icon: Icons.money,
                       keyboardType: TextInputType.number,
@@ -393,8 +298,8 @@ class _IsconsaltantState extends State<Isconsaltant> {
                                 location: _locationController.text,
                                 description: _bioController.text,
                                 cost: _costController.text,
-                                domain: selectedDomainId.toString(),
-                                subDomain: selectedSubDomainId.toString(),
+                                domain: _domainController.text,
+                                subDomain: _subDomainController.text,
                                 yearsExperience: _experienceController.text,
                                 languages: _lanController.text,
                                 files: files,

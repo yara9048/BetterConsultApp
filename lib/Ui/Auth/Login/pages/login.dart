@@ -353,8 +353,8 @@ class _LoginState extends State<Login> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Emailconfiramtion()));
-                                            //  Register(email:'yaramicrosoft11@gmail.com')));
+                                          builder: (context) => //Emailconfiramtion()));
+                                              Register(email:'yaramicrosoft1221@gmail.com')));
                                   },
                                   child: text(
                                     label: S.of(context).signup,

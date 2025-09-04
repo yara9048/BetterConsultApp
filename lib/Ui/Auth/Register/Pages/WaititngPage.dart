@@ -13,7 +13,10 @@ class _WaititngPageState extends State<WaititngPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: Center(child: text(label: "Your application has been made successfully, please wait for the admin's confirmation to login as a consultant", fontSize: 20, color: Theme.of(context).colorScheme.primary),),
+      body: Padding(
+        padding: EdgeInsets.all(10),
+        child: Center(child: text(label: "Your application has been made.\nplease wait for the admin's confirmation \nto login as a consultant", fontSize: 16, color: Theme.of(context).colorScheme.primary),),
+      ),
     );
   }
 }

@@ -36,13 +36,8 @@ class ChatHistoryProvider with ChangeNotifier {
       print(response.data);
       if (response.statusCode == 200) {
         final data = response.data;
-        if (data is List) {
-          _chats = data.map((item) => ChatHistoryModel.fromJson(item)).toList();
-        } else if (data is Map && data['data'] is List) {
-          _chats = (data['data'] as List).map((item) => ChatHistoryModel.fromJson(item)).toList();
-        } else {
-          _errorMessage = 'Unexpected response format';
-        }
+        _chats = (data as List).map((item) => ChatHistoryModel.fromJson(item)).toList();
+
       }
       else if (response.statusCode == 404) {
         _errorMessage = 'No consultants here';

@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled6/Providers/Home/User/NavBarProviders/DeleteFromFavoriiteProvider.dart';
 import '../../../Models/Home/User/Others/GeetSubDomainsModel.dart';
+import '../../../Providers/Home/User/NavBarProviders/DeleteFromFavoriiteProvider.dart';
 import '../../../Providers/Home/User/NavBarProviders/AddToFavoriteProvider.dart';
 import '../../../Providers/Home/User/Others/GetSubDomainsProvider.dart';
 import '../../../Providers/Home/User/Others/AllConultandProvider.dart';
@@ -36,6 +36,7 @@ class _AllConsultantState extends State<AllConsultant> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _subDomainsProvider.fetchSubDomains(id: widget.id);
+
       if (_subDomainsProvider.domains.isNotEmpty) {
         selectedSubDomainId = _subDomainsProvider.domains[0].id;
         selectedSubDomainName = _subDomainsProvider.domains[0].name;
@@ -57,8 +58,6 @@ class _AllConsultantState extends State<AllConsultant> {
       domainId: widget.id,
       subDomainId: selectedSubDomainId!,
     );
-    print(selectedSubDomainId);
-
   }
 
   @override
@@ -69,7 +68,7 @@ class _AllConsultantState extends State<AllConsultant> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 50.0, left: 50),
+            padding: const EdgeInsets.symmetric(horizontal: 50.0),
             child: Text(
               S.of(context).allConsultant,
               style: const TextStyle(
@@ -82,57 +81,53 @@ class _AllConsultantState extends State<AllConsultant> {
         ),
       ),
       bottomNavigationBar: Container(
-      height: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Center(
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.primary,
-              fontFamily: 'NotoSerifGeorgian',
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, -2),
             ),
-            children: [
-              TextSpan(
-                text: S.of(context).generalChat1,
+          ],
+        ),
+        child: Center(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.primary,
+                fontFamily: 'NotoSerifGeorgian',
               ),
-              TextSpan(
-                text: S.of(context).generalChat2,
-              ),
-              TextSpan(
-                text: S.of(context).generalChat3,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary
+              children: [
+                TextSpan(text: S.of(context).generalChat1),
+                TextSpan(text: S.of(context).generalChat2),
+                TextSpan(
+                  text: S.of(context).generalChat3,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => Generalchat()),
+                      );
+                    },
                 ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context){return Generalchat();}));
-                  },
-              ),
-              TextSpan(
-                text: S.of(context).generalChat4,
-              ),
-            ],
+                TextSpan(text: S.of(context).generalChat4),
+              ],
+            ),
           ),
         ),
       ),
-    ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Subdomains
             Consumer<GetSubDomainsProvider>(
               builder: (context, provider, child) {
                 if (provider.isLoading) {
@@ -142,12 +137,23 @@ class _AllConsultantState extends State<AllConsultant> {
                   );
                 } else if (provider.errorMessage != null) {
                   return Center(
-                    child: text(label:provider.errorMessage!,
-                    color: Theme.of(context).colorScheme.primary,fontSize: 16,),
+                    child: text(
+                      label: provider.errorMessage!,
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 16,
+                    ),
                   );
                 } else {
                   final subDomains = provider.domains;
-                  if (subDomains.isEmpty) return const SizedBox();
+                  if (subDomains.isEmpty) {
+                    return Center(
+                      child: text(
+                        label: 'No subdomains available.',
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 16,
+                      ),
+                    );
+                  }
                   return SizedBox(
                     height: 40,
                     child: ListView.separated(
@@ -157,7 +163,6 @@ class _AllConsultantState extends State<AllConsultant> {
                       itemBuilder: (context, index) {
                         final subDomain = subDomains[index];
                         final isSelected = selectedSubDomainId == subDomain.id;
-
                         return ChoiceChip(
                           label: Text(
                             subDomain.name,
@@ -182,6 +187,7 @@ class _AllConsultantState extends State<AllConsultant> {
               },
             ),
             const SizedBox(height: 12),
+            // Consultants
             Expanded(
               child: Consumer<AllConsultantProvider>(
                 builder: (context, provider, child) {
@@ -189,13 +195,19 @@ class _AllConsultantState extends State<AllConsultant> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (provider.errorMessage != null) {
                     return Center(
-                      child: text(label:provider.errorMessage!,
-                        color: Theme.of(context).colorScheme.primary,fontSize: 16,),
+                      child: text(
+                        label: provider.errorMessage!,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 16,
+                      ),
                     );
                   } else if (provider.consultants.isEmpty) {
                     return Center(
-                      child: text(label:provider.errorMessage!,
-                        color: Theme.of(context).colorScheme.primary,fontSize: 16,),
+                      child: text(
+                        label: 'No consultants for this subdomain.',
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 16,
+                      ),
                     );
                   } else {
                     return GridView.builder(
@@ -213,15 +225,13 @@ class _AllConsultantState extends State<AllConsultant> {
                           name: consultant.firstName,
                           rate: consultant.rating,
                           domain: widget.name,
-                          specializing: selectedSubDomainName ,
+                          specializing: selectedSubDomainName,
                           fee: consultant.cost.toString(),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ConsultantDetails(
-                                  id: consultant.id,
-                                ),
+                                builder: (_) => ConsultantDetails(id: consultant.id),
                               ),
                             );
                           },
@@ -233,7 +243,7 @@ class _AllConsultantState extends State<AllConsultant> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: text(
-                                    label:'Added to favorites!',
+                                    label: 'Added to favorites!',
                                     fontSize: 14,
                                     color: Theme.of(context).colorScheme.onSurface,
                                   ),
@@ -249,19 +259,16 @@ class _AllConsultantState extends State<AllConsultant> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: text(
-                                    label:'Removed from favorites!',
+                                    label: 'Removed from favorites!',
                                     fontSize: 14,
                                     color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                   backgroundColor: Theme.of(context).colorScheme.secondary,
                                 ),
-                                             );
+                              );
                             }
                           },
                         );
-
-
-
                       },
                     );
                   }

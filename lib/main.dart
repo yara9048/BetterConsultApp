@@ -25,6 +25,7 @@ import 'Providers/Home/User/NavBarProviders/EditProfile.dart';
 import 'Providers/Home/User/Others/ChatHistoryContentProvider.dart';
 import 'Providers/Home/User/Others/ChatProvider.dart';
 import 'Providers/Home/User/Others/ConsultantReviewProvider.dart';
+import 'Providers/Home/User/Others/GeneralChatPovider.dart';
 import 'Providers/Home/User/Others/GetSubDomainsProvider.dart';
 import 'Providers/Home/User/Others/AllConultandProvider.dart';
 import 'Providers/Home/User/Others/ConsultantDetailsProvider.dart';
@@ -34,6 +35,7 @@ import 'Providers/Home/Consultant/CheckQuaityProvider.dart';
 import 'Ui/Auth/Login/pages/login.dart';
 import 'Themes/darkTheme.dart';
 import 'Themes/lightTheme.dart';
+import 'Ui/Auth/Register/Pages/IsConsaltant.dart';
 import 'generated/l10n.dart';
 
 /// Background message handler
@@ -79,6 +81,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => DeleteChatProvider()),
         ChangeNotifierProvider(create: (_) => ChatHistoryContentProvider()),
+        ChangeNotifierProvider(create: (_) => GeneralChatProvider()),
+
       ],
       child: MyApp(),
     ),
