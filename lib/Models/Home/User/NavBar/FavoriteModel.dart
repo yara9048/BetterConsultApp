@@ -59,7 +59,7 @@ class FavoriteModel {
     id: (json["id"] as num).toInt(),
     location: json["location"],
     description: json["description"],
-    title: json["title"],
+    title: json["title"] ?? "",
     yearsExperience: (json["years_experience"] as num).toInt(),
     cost: (json["cost"] as num).toInt(),
     validated: json["validated"],
@@ -76,7 +76,7 @@ class FavoriteModel {
      domainName: json["domain_name"],
     subDomainName: json["sub_domain_name"],
     isFavorite: json["isFavorite"],
-    photo: json["photo"],
+    photo: json["photo"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {

@@ -15,6 +15,9 @@ import 'Providers/Auth/SendOtpProvider.dart';
 import 'Providers/Auth/VerifyEmailProvider.dart';
 import 'Providers/Auth/logoutProvider.dart';
 import 'Providers/Home/Consultant/ConsultantShowProfile.dart';
+import 'Providers/Home/Consultant/DeleteConsultationProvider.dart';
+import 'Providers/Home/Consultant/GetConsultationsProvider.dart';
+import 'Providers/Home/Consultant/GetNotificationProvider.dart';
 import 'Providers/Home/Consultant/RoleProvider.dart';
 import 'Providers/Home/Consultant/Segmentation.dart';
 import 'Providers/Home/Consultant/TextCheckQuality.dart';
@@ -100,6 +103,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => DeleteWaitingListprovider()),
         ChangeNotifierProvider(create: (_) => WaitingListProvider()),
+        ChangeNotifierProvider(create: (_) => GetConsultationsProvider()),
+        ChangeNotifierProvider(create: (_) => DeleteConsultationProvider()),
+        ChangeNotifierProvider(create: (_) => GetNotificationProvider()),
 
       ],
       child: MyApp(),

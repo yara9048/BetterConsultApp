@@ -10,6 +10,8 @@ import '../../../Home/Components/SettingNotificationsWidget.dart';
 import '../../../Home/Components/ThemeLanguagePopup.dart';
 import '../../../Home/Pages/Notifications.dart';
 import '../Component/WitingListCard.dart';
+import '../Pages/AddConsultation2.dart';
+import '../Pages/ShowMyConsultations.dart';
 import 'addConsutation.dart';
 
 class HomeCons extends StatefulWidget {
@@ -72,7 +74,9 @@ class _HomeConsState extends State<HomeCons> {
                     SettingNotificationsWidget(
                       title: S.of(context).settings,
                       icon: Icons.settings,
-                      onTap: _showThemeLanguageDialog,
+                      onTap: (){ Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => ShowmyConsultations()));
+                      },
                     )
                   ],
                 ),
@@ -128,13 +132,13 @@ class _HomeConsState extends State<HomeCons> {
                         if (question == null) return const SizedBox();
 
                         return WitingListCard(
-                          name: question.consultant!.user!.firstName.toString(),
+                          name: "Hiba",
                           content: question.question ?? "",
                           timestamp: question.consultant!.addedAt.toString(),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => AddConsultation()),
+                              MaterialPageRoute(builder: (_) => AddConsultation2(id: question.user?.id ?? 0,)),
                             );
                           },
                           onDelete: () async {

@@ -1,5 +1,5 @@
 class Endpoints {
-  static const String baseUrl = 'http://192.168.1.2:8000/api/';
+  static const String baseUrl = 'http://172.20.10.11:8000/api/';
   static const String login = 'auth/login/';
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';
@@ -35,6 +35,8 @@ class Endpoints {
   static const String deleteWaitingList = 'chat/delete_question/';
   static const String answeringWaitingFile = 'consultations/segment-answer-waiting/';
   static const String answeringWaitingText = 'consultations/answer-waiting-question/';
+  static const String getConsultation = 'consultations/my-consultations/';
+  static const String getNotifications = 'notifications/register/';
 
 
 }
