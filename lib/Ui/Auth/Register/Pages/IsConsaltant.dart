@@ -30,6 +30,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
   final _subDomainController = TextEditingController();
 
   List<PlatformFile> _uploadedFiles = [];
+  PlatformFile? _uploadedPhoto; // single photo
 
   @override
   void dispose() {
@@ -53,15 +54,29 @@ class _IsconsaltantState extends State<Isconsaltant> {
     }
   }
 
+  Future<void> _pickPhoto() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        _uploadedPhoto = result.files.first;
+      });
+    }
+  }
+
   void _removeFile(int index) {
     setState(() {
       _uploadedFiles.removeAt(index);
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _removePhoto() {
+    setState(() {
+      _uploadedPhoto = null;
+    });
   }
 
   @override
@@ -137,6 +152,7 @@ class _IsconsaltantState extends State<Isconsaltant> {
                     ),
 
                     const SizedBox(height: 20),
+                    // Files Section
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -212,7 +228,8 @@ class _IsconsaltantState extends State<Isconsaltant> {
                                   offset: const Offset(0, 2),
                                 ),
                               ],
-                              border: Border.all(color: Colors.grey.shade200),
+                              border:
+                              Border.all(color: Colors.grey.shade200),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -275,6 +292,138 @@ class _IsconsaltantState extends State<Isconsaltant> {
                     ),
 
                     const SizedBox(height: 25),
+                    // Photo Section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SectionTitle(label: "Profile Photo"),
+                        Container(
+                          width: 70,
+                          height: 27,
+                          child: ElevatedButton.icon(
+                            onPressed: _pickPhoto,
+                            icon: const Icon(Icons.add, size: 14),
+                            label: Text(
+                              S.of(context).add,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSerifGeorgian'),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              elevation: 1,
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: _uploadedPhoto == null
+                          ? Center(
+                        child: Text(
+                          "No photo uploaded",
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surface
+                                  .withOpacity(0.4),
+                              fontFamily: 'NotoSerifGeorgian'),
+                        ),
+                      )
+                          : Wrap(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                              border:
+                              Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.15),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.image,
+                                      size: 14, color: Colors.blueGrey),
+                                ),
+                                const SizedBox(width: 8),
+                                ConstrainedBox(
+                                  constraints:
+                                  const BoxConstraints(maxWidth: 140),
+                                  child: Text(
+                                    _uploadedPhoto!.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                InkWell(
+                                  onTap: _removePhoto,
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.close,
+                                        size: 14,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
                     Center(
                       child: SizedBox(
                         height: 60,
@@ -285,7 +434,8 @@ class _IsconsaltantState extends State<Isconsaltant> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            backgroundColor:
+                            Theme.of(context).colorScheme.primary,
                           ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
@@ -293,6 +443,23 @@ class _IsconsaltantState extends State<Isconsaltant> {
                                   .where((file) => file.path != null)
                                   .map((file) => File(file.path!))
                                   .toList();
+
+                              if (_uploadedPhoto == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: text(
+                                      label: "Please upload a profile photo",
+                                      fontSize: 14,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                    backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                  ),
+                                );
+                                return;
+                              }
 
                               await provider.sendApplication(
                                 location: _locationController.text,
@@ -303,27 +470,34 @@ class _IsconsaltantState extends State<Isconsaltant> {
                                 yearsExperience: _experienceController.text,
                                 languages: _lanController.text,
                                 files: files,
+                                photo_file: File(_uploadedPhoto!.path!),
                               );
 
                               if (provider.isSuccess) {
-                               Navigator.push(context, MaterialPageRoute(builder: (context){return WaititngPage();}));
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return WaititngPage();
+                                    }));
                               } else if (provider.errorMessage != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: text(
-                                      label:provider.errorMessage!,
+                                      label: provider.errorMessage!,
                                       fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurface,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                                     ),
-                                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                                    backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
                                   ),
-
                                 );
                               }
                             }
                           },
                           child: provider.isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(
+                              color: Colors.white)
                               : text(
                             label: S.of(context).submit,
                             fontSize: 18,

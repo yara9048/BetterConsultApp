@@ -23,6 +23,7 @@ class SendApplicationProvider with ChangeNotifier {
     required String yearsExperience,
     required String languages,
     required List<File> files,
+    required File photo_file,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -34,6 +35,12 @@ class SendApplicationProvider with ChangeNotifier {
     String url = Endpoints.baseUrl + Endpoints.sendApplication;
 
     try {
+      // Convert photo_file to MultipartFile
+      final MultipartFile photoMultipart = await MultipartFile.fromFile(
+        photo_file.path,
+        filename: photo_file.path.split('/').last,
+      );
+
       FormData formData = FormData.fromMap({
         'location': location,
         'description': description,
@@ -42,6 +49,7 @@ class SendApplicationProvider with ChangeNotifier {
         'sub_domain': subDomain,
         'years_experience': yearsExperience,
         'languages': languages,
+        'photo_file': photoMultipart, // send as MultipartFile
         'files': [
           for (var file in files)
             await MultipartFile.fromFile(
@@ -53,17 +61,9 @@ class SendApplicationProvider with ChangeNotifier {
 
       // Debug prints
       print("URL: $url");
-      print("Token: $token");
-      print("Location: $location");
-      print("Description: $description");
-      print("Cost: $cost");
-      print("Domain: $domain");
-      print("Sub Domain: $subDomain");
-      print("Years Experience: $yearsExperience");
-      print("Languages: $languages");
       print("Files count: ${files.length}");
+      print("Photo file: ${photo_file.path}");
 
-      // Send request
       final response = await DioHelper.postData(
         url: url,
         headers: {

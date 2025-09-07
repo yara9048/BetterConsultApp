@@ -57,9 +57,9 @@ class _CategoriesState extends State<Categories> {
           }
 
           // Filter only approved domains
-          final approvedDomains = provider.domains.where((d) => d.status == 'approved').toList();
+          //final approvedDomains = provider.domains.where((d) => d.status == 'approved').toList();
 
-          if (approvedDomains.isEmpty) {
+          if (provider.domains.isEmpty) {
             return Center(
               child: text(
                 label: S.of(context).NoCategories,
@@ -68,12 +68,11 @@ class _CategoriesState extends State<Categories> {
               ),
             );
           }
-
           return Padding(
             padding: const EdgeInsets.only(left: 12.0, right: 12, top: 12),
             child: GridView.builder(
               shrinkWrap: true,
-              itemCount: approvedDomains.length,
+              itemCount: provider.domains.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
@@ -81,7 +80,7 @@ class _CategoriesState extends State<Categories> {
                 childAspectRatio: 0.8,
               ),
               itemBuilder: (context, index) {
-                final category = approvedDomains[index];
+                final category = provider.domains[index];
                 return CategoryCard(
                   name: category.name,
                   onTap: () {

@@ -41,17 +41,42 @@ class ChatProvider with ChangeNotifier {
         },
       );
 
+      print("🔹 Full raw response: ${response.data}");
       final data = response.data;
 
-      if (data is Map && data.containsKey('chat_id')) {
-        _chats.add(ChatModel.fromJson(response.data));
-        _isSuccess = true;
+      if (data is Map) {
+        print("✅ Response is a Map with keys: ${data.keys}");
+
+        if (data.containsKey('chat')) {
+          print("📌 Found 'chat' object with id: ${data['chat']['id']}");
+        }
+        if (data.containsKey('user_message')) {
+          print("📌 Found 'user_message': ${data['user_message']}");
+        }
+        if (data.containsKey('consultant_message')) {
+          print("📌 Found 'consultant_message': ${data['consultant_message']}");
+        }
+        if (data.containsKey('message_resources')) {
+          print("📌 Found ${data['message_resources'].length} resources");
+        }
+
+        // Adjust this check based on real response
+        if (data.containsKey('chat')) {
+          print("✅ Accepting response as valid ChatModel input");
+          _chats.add(ChatModel.fromJson(response.data));
+          _isSuccess = true;
+        } else {
+          _errorMessage = 'Unexpected response structure: missing "chat"';
+          print("❌ ERROR: $_errorMessage");
+        }
       } else {
-        _errorMessage = 'Unexpected response format';
+        _errorMessage = 'Unexpected response type: ${data.runtimeType}';
+        print("❌ ERROR: $_errorMessage");
       }
-    } catch (e) {
+    } catch (e, stack) {
       _errorMessage = 'Failed: $e';
-      print(e);
+      print("❌ Exception: $e");
+      print("🔍 Stacktrace: $stack");
     }
 
     _isLoading = false;

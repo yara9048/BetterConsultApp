@@ -31,6 +31,8 @@ class GeneralChatModel {
 class Consultant {
   int id;
   User user;
+  Domain domain;
+  Domain subDomain;
   String location;
   String description;
   dynamic title;
@@ -41,14 +43,14 @@ class Consultant {
   DateTime addedAt;
   double rating;
   int reviewCount;
-  int? domain;
-  int? subDomain;
   int validatedBy;
   dynamic photo;
 
   Consultant({
     required this.id,
     required this.user,
+    required this.domain,
+    required this.subDomain,
     required this.location,
     required this.description,
     required this.title,
@@ -59,8 +61,6 @@ class Consultant {
     required this.addedAt,
     required this.rating,
     required this.reviewCount,
-    required this.domain,
-    required this.subDomain,
     required this.validatedBy,
     required this.photo,
   });
@@ -68,6 +68,8 @@ class Consultant {
   factory Consultant.fromJson(Map<String, dynamic> json) => Consultant(
     id: json["id"],
     user: User.fromJson(json["user"]),
+    domain: Domain.fromJson(json["domain"]),
+    subDomain: Domain.fromJson(json["sub_domain"]),
     location: json["location"],
     description: json["description"],
     title: json["title"],
@@ -78,8 +80,6 @@ class Consultant {
     addedAt: DateTime.parse(json["added_at"]),
     rating: json["rating"],
     reviewCount: json["review_count"],
-    domain: json["domain"],
-    subDomain: json["sub_domain"],
     validatedBy: json["validated_by"],
     photo: json["photo"],
   );
@@ -87,6 +87,8 @@ class Consultant {
   Map<String, dynamic> toJson() => {
     "id": id,
     "user": user.toJson(),
+    "domain": domain.toJson(),
+    "sub_domain": subDomain.toJson(),
     "location": location,
     "description": description,
     "title": title,
@@ -97,10 +99,36 @@ class Consultant {
     "added_at": addedAt.toIso8601String(),
     "rating": rating,
     "review_count": reviewCount,
-    "domain": domain,
-    "sub_domain": subDomain,
     "validated_by": validatedBy,
     "photo": photo,
+  };
+}
+
+class Domain {
+  int id;
+  String name;
+  String status;
+  int? domain;
+
+  Domain({
+    required this.id,
+    required this.name,
+    required this.status,
+    this.domain,
+  });
+
+  factory Domain.fromJson(Map<String, dynamic> json) => Domain(
+    id: json["id"],
+    name: json["name"],
+    status: json["status"],
+    domain: json["domain"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "status": status,
+    "domain": domain,
   };
 }
 

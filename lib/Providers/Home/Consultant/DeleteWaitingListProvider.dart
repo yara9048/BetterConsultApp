@@ -1,70 +1,58 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dio/dio.dart';
+
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
-import '../../../../Models/Home/Consultant/VttModel.dart';
 
-class VttProvider with ChangeNotifier {
+class DeleteWaitingListprovider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   bool _success = false;
-  VoiceModel? _voiceModel;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isVerified => _success;
-  VoiceModel? get voiceModel => _voiceModel;
 
-  Future<void> Vtt({required File file}) async {
+  Future<void> deleteChat(int waiting_question_id) async {
     _isLoading = true;
     _errorMessage = null;
     _success = false;
-    _voiceModel = null;
     notifyListeners();
-
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
 
-    String url = Endpoints.baseUrl + Endpoints.vtt;
-
+    String url = Endpoints.baseUrl + Endpoints.deleteWaitingList;
     try {
-      FormData formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
-          file.path,
-          filename: file.path.split('/').last,
-        ),
-      });
-
-      final response = await DioHelper.postData(
+      final response = await DioHelper.deleteData(
         url: url,
-        data: formData,
+        data: {
+          'waiting_question_id': waiting_question_id,
+        },
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'multipart/form-data',
         },
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
         _success = true;
-        _voiceModel = VoiceModel.fromJson(response.data);
+        print("deleted");
+      } else if (response.statusCode == 404) {
+        _errorMessage = 'chat not found';
       } else {
         _errorMessage = 'Failed with status code: ${response.statusCode}';
       }
     } catch (e) {
       _errorMessage = 'Request failed: $e';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
+
+    notifyListeners();
   }
 
   void reset() {
     _errorMessage = null;
     _success = false;
     _isLoading = false;
-    _voiceModel = null;
     notifyListeners();
   }
 }

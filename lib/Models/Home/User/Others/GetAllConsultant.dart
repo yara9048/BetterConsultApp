@@ -29,7 +29,7 @@ class GetAllConsultant {
   int rating;
   int reviewCount;
   bool isFavorite;
-  dynamic photo;
+  Photo photo;
 
   GetAllConsultant({
     required this.id,
@@ -56,27 +56,27 @@ class GetAllConsultant {
   });
 
   factory GetAllConsultant.fromJson(Map<String, dynamic> json) => GetAllConsultant(
+    id: (json["id"] as num).toInt(),
     firstName: json["first_name"] ?? "",
     lastName: json["last_name"] ?? "",
     email: json["email"] ?? "",
-    isFavorite: json["isFavorite"] ?? false,
-    id: (json["id"] as num).toInt(),
-    location: json["location"],
-    description: json["description"],
+    location: json["location"] ?? "",
+    description: json["description"] ?? "",
     title: json["title"],
-    yearsExperience: (json["years_experience"] as num).toInt(),
-    cost: (json["cost"] as num).toInt(),
-    validated: json["validated"],
-    validatedAt: DateTime.parse(json["validated_at"]),
-    addedAt: DateTime.parse(json["added_at"]),
-    rating: json["rating"] != null ? (json["rating"] as num).toInt() : 0,
-    reviewCount: json["review_count"] != null ? (json["review_count"] as num).toInt() : 0,
-    domain: (json["domain"] as num).toInt(),
-    subDomain: (json["sub_domain"] as num).toInt(),
-    validatedBy: json["validated_by"],
-    domainName: json["domain_name"],
-    subDomainName: json["sub_domain_name"],
-    photo: json["photo"],
+    yearsExperience: (json["years_experience"] as num?)?.toInt() ?? 0,
+    cost: (json["cost"] as num?)?.toInt() ?? 0,
+    domain: (json["domain"] as num?)?.toInt() ?? 0,
+    subDomain: (json["sub_domain"] as num?)?.toInt() ?? 0,
+    domainName: json["domain_name"] ?? "",
+    subDomainName: json["sub_domain_name"] ?? "",
+    validated: json["validated"] ?? false,
+    validatedBy: json["validated_by"] ?? "",
+    validatedAt: json["validated_at"] != null ? DateTime.parse(json["validated_at"]) : DateTime.now(),
+    addedAt: json["added_at"] != null ? DateTime.parse(json["added_at"]) : DateTime.now(),
+    rating: (json["rating"] as num?)?.toInt() ?? 0,
+    reviewCount: (json["review_count"] as num?)?.toInt() ?? 0,
+    isFavorite: json["isFavorite"] ?? false,
+    photo: json["photo"] != null ? Photo.fromJson(json["photo"]) : Photo.empty(), // Handle null photo
   );
 
   Map<String, dynamic> toJson() => {
@@ -100,6 +100,92 @@ class GetAllConsultant {
     "rating": rating,
     "review_count": reviewCount,
     "isFavorite": isFavorite,
-    "photo": photo,
+    "photo": photo.toJson(),
+  };
+}
+
+class Photo {
+  int id;
+  String fileUrl;
+  String filePath;
+  FileMetaData fileMetaData;
+  int relationId;
+  DateTime createdAt;
+  int relationType;
+
+  Photo({
+    required this.id,
+    required this.fileUrl,
+    required this.filePath,
+    required this.fileMetaData,
+    required this.relationId,
+    required this.createdAt,
+    required this.relationType,
+  });
+
+  // Add an empty constructor for null cases
+  factory Photo.empty() => Photo(
+    id: 0,
+    fileUrl: "",
+    filePath: "",
+    fileMetaData: FileMetaData.empty(),
+    relationId: 0,
+    createdAt: DateTime.now(),
+    relationType: 0,
+  );
+
+  factory Photo.fromJson(Map<String, dynamic> json) => Photo(
+    id: (json["id"] as num?)?.toInt() ?? 0,
+    fileUrl: json["file_url"] ?? "",
+    filePath: json["file_path"] ?? "",
+    fileMetaData: json["file_meta_data"] != null
+        ? FileMetaData.fromJson(json["file_meta_data"])
+        : FileMetaData.empty(),
+    relationId: (json["relation_id"] as num?)?.toInt() ?? 0,
+    createdAt: json["created_at"] != null
+        ? DateTime.parse(json["created_at"])
+        : DateTime.now(),
+    relationType: (json["relation_type"] as num?)?.toInt() ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "file_url": fileUrl,
+    "file_path": filePath,
+    "file_meta_data": fileMetaData.toJson(),
+    "relation_id": relationId,
+    "created_at": createdAt.toIso8601String(),
+    "relation_type": relationType,
+  };
+}
+
+class FileMetaData {
+  String fileName;
+  int fileSizeBytes;
+  String fileType;
+
+  FileMetaData({
+    required this.fileName,
+    required this.fileSizeBytes,
+    required this.fileType,
+  });
+
+  // Add an empty constructor for null cases
+  factory FileMetaData.empty() => FileMetaData(
+    fileName: "",
+    fileSizeBytes: 0,
+    fileType: "",
+  );
+
+  factory FileMetaData.fromJson(Map<String, dynamic> json) => FileMetaData(
+    fileName: json["file_name"] ?? "",
+    fileSizeBytes: (json["file_size_bytes"] as num?)?.toInt() ?? 0,
+    fileType: json["file_type"] ?? "",
+  );
+
+  Map<String, dynamic> toJson() => {
+    "file_name": fileName,
+    "file_size_bytes": fileSizeBytes,
+    "file_type": fileType,
   };
 }

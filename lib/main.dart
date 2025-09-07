@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-
+import 'package:untitled6/Providers/Home/Consultant/ConsultantEditProfile.dart';
+import 'package:untitled6/Providers/Home/Consultant/DeleteWaitingListProvider.dart';
+import 'package:untitled6/Providers/Home/Consultant/ShowWaitingListProvider.dart';
 import 'package:untitled6/firebase_options.dart';
 import 'DIO/DioHelper.dart';
 import 'Providers/Auth/LoginProvider.dart';
@@ -12,10 +14,16 @@ import 'Providers/Auth/NewPasswordProvider.dart';
 import 'Providers/Auth/SendOtpProvider.dart';
 import 'Providers/Auth/VerifyEmailProvider.dart';
 import 'Providers/Auth/logoutProvider.dart';
+import 'Providers/Home/Consultant/ConsultantShowProfile.dart';
+import 'Providers/Home/Consultant/RoleProvider.dart';
+import 'Providers/Home/Consultant/Segmentation.dart';
+import 'Providers/Home/Consultant/TextCheckQuality.dart';
+import 'Providers/Home/Consultant/VideoAndVoiceUploading.dart';
 import 'Providers/Home/User/NavBarProviders/AddToFavoriteProvider.dart';
 import 'Providers/Home/User/NavBarProviders/ChatHistoryProvider.dart';
 import 'Providers/Home/User/NavBarProviders/DeleteChatProvider.dart';
 import 'Providers/Home/User/NavBarProviders/DeleteFromFavoriiteProvider.dart';
+import 'Providers/Home/User/NavBarProviders/GetTopRated.dart';
 import 'Providers/Home/User/NavBarProviders/ViewProfileProvider.dart';
 import 'Providers/Home/User/NavBarProviders/GetAlFavoriteProvider.dart';
 import 'Providers/Home/User/NavBarProviders/GetDomainsProvider.dart';
@@ -29,16 +37,16 @@ import 'Providers/Home/User/Others/GeneralChatPovider.dart';
 import 'Providers/Home/User/Others/GetSubDomainsProvider.dart';
 import 'Providers/Home/User/Others/AllConultandProvider.dart';
 import 'Providers/Home/User/Others/ConsultantDetailsProvider.dart';
+import 'Providers/Home/User/Others/NotificationProvider.dart';
 import 'Providers/Home/User/Others/SendApplicationProvider.dart';
-import 'Providers/Home/Consultant/CheckQuaityProvider.dart';
-
 import 'Ui/Auth/Login/pages/login.dart';
 import 'Themes/darkTheme.dart';
 import 'Themes/lightTheme.dart';
-import 'Ui/Auth/Register/Pages/IsConsaltant.dart';
+import 'Ui/Auth/Register/Pages/WaititngPage.dart';
+import 'Ui/ConsaltantUi/NavBar/NavBarPages/home.dart';
+import 'Ui/ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import 'generated/l10n.dart';
 
-/// Background message handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print("----------------------");
@@ -76,12 +84,22 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => DeleteProfile()),
         ChangeNotifierProvider(create: (_) => EditProfile()),
         ChangeNotifierProvider(create: (_) => ConsultantReviewProvider()),
-        ChangeNotifierProvider(create: (_) => CheckQuaityProvider()),
+        ChangeNotifierProvider(create: (_) => VideoAndVoiceUploading()),
+        ChangeNotifierProvider(create: (_) => Segmentation()),
+        ChangeNotifierProvider(create: (_) => TextCheckQuality()),
         ChangeNotifierProvider(create: (_) => ChatHistoryProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => DeleteChatProvider()),
         ChangeNotifierProvider(create: (_) => ChatHistoryContentProvider()),
         ChangeNotifierProvider(create: (_) => GeneralChatProvider()),
+        ChangeNotifierProvider(create: (_) => ViewProfileConsultantProvider()),
+        ChangeNotifierProvider(create: (_) => EditConsultantProfileProvider()),
+        ChangeNotifierProvider(create: (_) => GetRole()),
+        ChangeNotifierProvider(create: (_) => GetTopRated()),
+        ChangeNotifierProvider(create: (_) => GetTopRated()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => DeleteWaitingListprovider()),
+        ChangeNotifierProvider(create: (_) => WaitingListProvider()),
 
       ],
       child: MyApp(),
@@ -158,6 +176,9 @@ class _MyAppState extends State<MyApp> {
     print('User granted permission: ${settings.authorizationStatus}');
     print("----------------------");
     String? token = await messaging.getToken();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(token!,'device_token');
+
     print("----------------------");
     print('Device Token: $token');
     print("----------------------");

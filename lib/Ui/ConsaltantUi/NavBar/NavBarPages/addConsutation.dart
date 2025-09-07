@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/Home/Consultant/Segmentation.dart';
+import '../../../../Providers/Home/Consultant/VideoAndVoiceUploading.dart';
 import '../../../../generated/l10n.dart';
 import '../../../Auth/Register/Compoenets/text.dart';
 import '../Component/InputCard.dart';
 import '../Component/OptionCard.dart';
+
 
 class AddConsultation extends StatefulWidget {
   const AddConsultation({super.key});
@@ -16,44 +21,37 @@ class _AddConsultationState extends State<AddConsultation> {
   String? selectedOption;
   List<String> uploadedFiles = [];
   String? consultationText;
+  int? qualityCheckId;
 
   void _selectOption(String option) {
     setState(() {
       selectedOption = option;
       uploadedFiles.clear();
       consultationText = null;
+      qualityCheckId = null;
     });
   }
 
   Future<void> pickFile(String type) async {
     FileType fileType = FileType.custom;
+    if (type == S.of(context).video) fileType = FileType.video;
+    if (type == S.of(context).voice) fileType = FileType.audio;
 
-    if (type == S.of(context).video) {
-      fileType = FileType.video;
-    } else if (type == S.of(context).voice) {
-      fileType = FileType.audio;
-    }
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: fileType,
-    );
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: fileType);
 
     if (result != null && result.files.single.path != null) {
       String path = result.files.single.path!;
       String extension = path.split('.').last.toLowerCase();
 
       bool isValid = false;
-      if (type == S.of(context).video) {
-        isValid = ['mp4', 'mov', 'avi', 'mkv'].contains(extension);
-      } else if (type ==S.of(context).voice) {
-        isValid = ['mp3', 'wav', 'aac', 'm4a'].contains(extension);
-      }
+      if (type == S.of(context).video) isValid = ['mp4', 'mov', 'avi', 'mkv'].contains(extension);
+      if (type == S.of(context).voice) isValid = ['mp3', 'wav', 'aac', 'm4a'].contains(extension);
 
       if (!isValid) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: text(
-              label: S.of(context).uploadValidationInvalid +" " +type,
+              label: S.of(context).uploadValidationInvalid + " " + type,
               fontSize: 14,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -64,14 +62,14 @@ class _AddConsultationState extends State<AddConsultation> {
       }
 
       setState(() {
+        uploadedFiles.clear();
         uploadedFiles.add(path);
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: text(
-            label:
-            type[0].toUpperCase() + type.substring(1) +" "+ S.of(context).uploadValidationSuccess,
+            label: "${type[0].toUpperCase() + type.substring(1)} ${S.of(context).uploadValidationSuccess}",
             fontSize: 14,
             color: Theme.of(context).colorScheme.onSurface,
           ),
@@ -95,15 +93,13 @@ class _AddConsultationState extends State<AddConsultation> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       backgroundColor: colorScheme.background,
       appBar: AppBar(
-        title:  Text(
+        title: Text(
           S.of(context).addConsultant,
-          style: TextStyle(
-            fontFamily: 'NotoSerifGeorgian',
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontFamily: 'NotoSerifGeorgian', fontWeight: FontWeight.bold),
         ),
         backgroundColor: colorScheme.primary,
         foregroundColor: Colors.white,
@@ -116,11 +112,7 @@ class _AddConsultationState extends State<AddConsultation> {
             child: Center(
               child: Text(
                 S.of(context).addConsultant1,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontFamily: 'NotoSerifGeorgian',
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'NotoSerifGeorgian'),
               ),
             ),
           ),
@@ -148,7 +140,7 @@ class _AddConsultationState extends State<AddConsultation> {
                   ConsultationOptionCard(
                     label: S.of(context).voice,
                     icon: Icons.mic,
-                    value:S.of(context).voice,
+                    value: S.of(context).voice,
                     isSelected: selectedOption == S.of(context).voice,
                     onTap: () => _selectOption(S.of(context).voice),
                     colorScheme: colorScheme,
@@ -158,20 +150,21 @@ class _AddConsultationState extends State<AddConsultation> {
                     label: S.of(context).text,
                     icon: Icons.text_snippet,
                     value: S.of(context).text,
-                    isSelected: selectedOption ==S.of(context).text,
+                    isSelected: selectedOption == S.of(context).text,
                     onTap: () => _selectOption(S.of(context).text),
                     colorScheme: colorScheme,
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
               ConsultationInputWidget(
                 selectedOption: selectedOption,
                 uploadedFiles: uploadedFiles,
-                onTextChanged: (val) => setState(() => consultationText = val),
-                onFileUpload: pickFile,
-                onFileDelete: (file) => setState(() => uploadedFiles.remove(file)),
+                onTextChanged: (text) => setState(() => consultationText = text),
+                onFilePick: pickFile,
+                videoProvider: context.read<VideoAndVoiceUploading>(),
+                segmentationProvider: context.read<Segmentation>(),
                 colorScheme: colorScheme,
-                consultationText: consultationText,
               ),
             ],
           ),

@@ -3,26 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
-import '../../../Models/Home/Consultant/ShowConsultantProfileModedl.dart';
+import '../../../Models/Home/Consultant/WaitingListModel.dart';
 
-class ViewProfileConsultantProvider with ChangeNotifier {
+class WaitingListProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
-  ShowConsultantProfileModedl? _profile;
+  WaitingListModel? _list;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  ShowConsultantProfileModedl? get profile => _profile;
 
-  Future<void> fetchConsultantProfile() async {
+  // FIXED: Return _list instead of calling list recursively
+  WaitingListModel? get list => _list;
+
+  Future<void> fetchWaitingList() async {
     _isLoading = true;
     _errorMessage = null;
-    _profile = null;
+    _list = null;
     notifyListeners();
 
-    print("🔵 [Provider] fetchConsultantProfile() called...");
+    print("🔵 [Provider] fetchWaitingList() called...");
 
-    String url = Endpoints.baseUrl + Endpoints.editAndShowConsultantProfile;
+    String url = Endpoints.baseUrl + Endpoints.waitingList;
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token') ?? '';
@@ -40,28 +42,24 @@ class ViewProfileConsultantProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         if (response.data is String) {
-          print("🟣 [Provider] Response is String → decoding...");
           final decoded = jsonDecode(response.data);
-          _profile = ShowConsultantProfileModedl.fromJson(decoded);
+          _list = WaitingListModel.fromJson(decoded);
         } else if (response.data is Map<String, dynamic>) {
-          print("🟣 [Provider] Response is Map → parsing...");
-          _profile = ShowConsultantProfileModedl.fromJson(response.data);
+          _list = WaitingListModel.fromJson(response.data);
         } else {
           print("🔴 [Provider] Unexpected response type: ${response.data.runtimeType}");
         }
       } else {
-        _errorMessage = 'Failed to fetch profile (status: ${response.statusCode})';
+        _errorMessage = 'Failed to fetch waiting list (status: ${response.statusCode})';
         print("🔴 [Provider] Error: $_errorMessage");
       }
     } catch (e) {
-      _errorMessage = 'Failed to fetch profile: ${e.toString()}';
+      _errorMessage = 'Failed to fetch waiting list: ${e.toString()}';
       print("🔴 [Provider] Exception: $e");
     }
 
-    if (_profile != null) {
-      print("✅ [Provider] Profile loaded: ${_profile!.firstName} ${_profile!.lastName}");
-    } else {
-      print("⚠️ [Provider] Profile is still null.");
+    if (_list == null) {
+      print("⚠️ [Provider] Waiting list is still null.");
     }
 
     _isLoading = false;
@@ -69,9 +67,8 @@ class ViewProfileConsultantProvider with ChangeNotifier {
   }
 
   void reset() {
-    print("🟠 [Provider] Reset called");
     _errorMessage = null;
-    _profile = null;
+    _list = null;
     notifyListeners();
   }
 }

@@ -1,5 +1,5 @@
 class Endpoints {
-  static const String baseUrl = 'http://10.209.132.112:8000/api/';
+  static const String baseUrl = 'http://192.168.1.2:8000/api/';
   static const String login = 'auth/login/';
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';
@@ -23,6 +23,18 @@ class Endpoints {
   static const String chatHistory = 'chat/get_user_chats/';
   static const String chatHistoryContent = 'chat/messages/';
   static const String generalChat = 'chat/question_consultants/';
-  static const String Vtt = 'transcribe/';
+  static const String videoAndVoiceUploading = 'consultations/check-quality/';
+  static const String textUploading = 'consultations/';
+  static const String segment = 'consultations/segment-from-quality/';
+  static const String editAndShowConsultantProfile = 'consultants/me/';
+  static const String roleShowing = 'consultations/my-role/';
+  static const String vtt = 'transcribe/';
+  static const String topRated = 'consultants/top-rated/';
+  static const String notifications = 'notifications/register/';
+  static const String waitingList = 'chat/waiting_questions_list/';
+  static const String deleteWaitingList = 'chat/delete_question/';
+  static const String answeringWaitingFile = 'consultations/segment-answer-waiting/';
+  static const String answeringWaitingText = 'consultations/answer-waiting-question/';
+
 
 }

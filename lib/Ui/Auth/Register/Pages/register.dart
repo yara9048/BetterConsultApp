@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../DIO/EndPoints.dart';
 import '../../../../Providers/Auth/RegisterProvider.dart';
+import '../../../../Providers/Home/User/Others/NotificationProvider.dart';
 import '../../../../generated/l10n.dart';
 import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import '../../../Home/Pages/NavBar.dart';
@@ -98,8 +99,23 @@ class _RegisterState extends State<Register> {
           if (provider.isSuccess) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               provider.reset();
-              //final prefs = await SharedPreferences.getInstance();
-              //final role = prefs.getString('user_role');
+              final prefs = await SharedPreferences.getInstance();
+              final userId = prefs.getString('user_id') ?? ' ';
+              final deviceToken = prefs.getString('device_token') ?? '';
+
+              final notificationProvider =
+              Provider.of<NotificationProvider>(context, listen: false);
+
+              await notificationProvider.notification(
+                id: int.parse(userId),
+                deviceToken: deviceToken,
+              );
+
+              if (notificationProvider.isVerified) {
+                print("Notification registered successfully!");
+              } else if (notificationProvider.errorMessage != null) {
+                print("Notification error: ${notificationProvider.errorMessage}");
+              }
               print(_isConsultant);
               if (_isConsultant) {
                 Navigator.pushReplacement(
@@ -462,6 +478,7 @@ class _RegisterState extends State<Register> {
                             password: _passwordController.text.trim(),
                             role: 'user',
                           );
+
                         } else {
                           _scrollController.animateTo(
                             0,

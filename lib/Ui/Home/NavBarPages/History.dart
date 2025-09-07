@@ -17,7 +17,6 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   @override
-  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -73,8 +72,8 @@ class _HistoryState extends State<History> {
                   final chat = provider.chats[index];
                   return ChatHistoryCard(
                     name: chat.consultant.user.firstName+' '+chat.consultant.user.lastName,
-                    specializing: chat.consultant.subDomain.toString(),
-                    domain: chat.consultant.domain.toString(),
+                    specializing: chat.consultant.subDomain.name,
+                    domain: chat.consultant.domain.name,
                     content:chat.title,
                     timestamp: formatDate(chat.createdAt.toString()),
                     onTap: () {

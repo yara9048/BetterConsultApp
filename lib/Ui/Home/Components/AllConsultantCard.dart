@@ -9,7 +9,8 @@ class AllConsultantCard extends StatefulWidget {
   final String fee;
   final VoidCallback onTap;
   final Future<void> Function()? onAddFavorite;   // new
-  final Future<void> Function()? onRemoveFavorite; // new
+  final Future<void> Function()? onRemoveFavorite;
+  final String imageUrl;// new
   final bool isFavoriteInitial;
 
   const AllConsultantCard({
@@ -23,6 +24,7 @@ class AllConsultantCard extends StatefulWidget {
     required this.onTap,
     this.onAddFavorite,
     this.onRemoveFavorite,
+    required this.imageUrl,
     this.isFavoriteInitial = false,
   }) : super(key: key);
 
@@ -84,12 +86,15 @@ class _AllConsultantCardState extends State<AllConsultantCard> {
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primary.withOpacity(0.1),
                     ),
-                    child: Center(
-                      child: Icon(
-                        Icons.person,
-                        size: 80,
-                        color: theme.colorScheme.primary,
-                      ),
+                    child: widget.imageUrl != null && widget.imageUrl!.isNotEmpty
+                        ? Image.network(
+                      widget.imageUrl!,
+                      fit: BoxFit.cover,
+                    )
+                        : Icon(
+                      Icons.person,
+                      size: 80,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 ),

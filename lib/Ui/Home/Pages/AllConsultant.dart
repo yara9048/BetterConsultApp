@@ -221,6 +221,7 @@ class _AllConsultantState extends State<AllConsultant> {
                       itemBuilder: (context, index) {
                         final consultant = provider.consultants[index];
                         return AllConsultantCard(
+                          imageUrl: consultant.photo.filePath,
                           secondName: consultant.lastName,
                           name: consultant.firstName,
                           rate: consultant.rating,

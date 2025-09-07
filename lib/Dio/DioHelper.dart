@@ -67,5 +67,24 @@ class DioHelper {
     );
   }
 
+  static Future<Response> patchData({
+    required String url,
+    dynamic? data,
+    Map<String, dynamic>? headers,
+  }) async {
+    Map<String, dynamic> defaultHeaders = {
+      "Content-Type": "application/json",
+    };
+
+    if (headers != null) {
+      defaultHeaders.addAll(headers);
+    }
+
+    return await _dio.patch(
+      url,
+      data: data,
+      options: Options(headers: defaultHeaders),
+    );
+  }
 
 }

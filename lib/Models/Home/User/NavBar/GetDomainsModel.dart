@@ -11,23 +11,23 @@ String getDomainsModelToJson(List<GetDomainsModel> data) => json.encode(List<dyn
 class GetDomainsModel {
   int id;
   String name;
-  String status;
+  dynamic photo;
 
   GetDomainsModel({
     required this.id,
     required this.name,
-    required this.status,
+    required this.photo,
   });
 
   factory GetDomainsModel.fromJson(Map<String, dynamic> json) => GetDomainsModel(
     id: json["id"],
     name: json["name"],
-    status: json["status"],
+    photo: json["photo"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "status": status,
+    "photo": photo,
   };
 }

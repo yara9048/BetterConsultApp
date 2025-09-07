@@ -85,6 +85,7 @@ class _FavoriteState extends State<Favorite> {
                 itemBuilder: (context, index) {
                   final consultant = provider.favorites[index];
                   return AllConsultantCard(
+                    imageUrl: consultant.photo,
                     secondName: consultant.lastName,
                     name: consultant.firstName,
                     rate: consultant.rating,

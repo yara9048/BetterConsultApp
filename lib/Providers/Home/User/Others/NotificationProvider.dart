@@ -1,70 +1,64 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dio/dio.dart';
+
 import '../../../../DIO/DioHelper.dart';
 import '../../../../DIO/EndPoints.dart';
-import '../../../../Models/Home/Consultant/VttModel.dart';
 
-class VttProvider with ChangeNotifier {
+class NotificationProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   bool _success = false;
-  VoiceModel? _voiceModel;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isVerified => _success;
-  VoiceModel? get voiceModel => _voiceModel;
 
-  Future<void> Vtt({required File file}) async {
+
+  Future<void> notification ({required int id,required String deviceToken}) async {
     _isLoading = true;
     _errorMessage = null;
     _success = false;
-    _voiceModel = null;
     notifyListeners();
-
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
 
-    String url = Endpoints.baseUrl + Endpoints.vtt;
-
+    String url = Endpoints.baseUrl + Endpoints.notifications;
+    print(id);
+    print(url);
     try {
-      FormData formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
-          file.path,
-          filename: file.path.split('/').last,
-        ),
-      });
-
       final response = await DioHelper.postData(
         url: url,
-        data: formData,
+        data: {
+          'user_id': id,
+          'token ': deviceToken,
+        },
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'multipart/form-data',
         },
       );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      print(response.data);
+      print(response.statusCode);
+      if (response.statusCode == 201 || response.statusCode ==200) {
         _success = true;
-        _voiceModel = VoiceModel.fromJson(response.data);
+        print("added");
+      } else if (response.statusCode == 400) {
+        _errorMessage = 'Invalid';
       } else {
         _errorMessage = 'Failed with status code: ${response.statusCode}';
       }
     } catch (e) {
       _errorMessage = 'Request failed: $e';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      print(e);
     }
+
+    notifyListeners();
   }
 
   void reset() {
     _errorMessage = null;
     _success = false;
     _isLoading = false;
-    _voiceModel = null;
     notifyListeners();
   }
 }

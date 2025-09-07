@@ -73,9 +73,7 @@ class _EmailconfiramtionState extends State<Emailconfiramtion> {
             body: SingleChildScrollView(
               child: Stack(
                 children: [
-                  Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(math.pi),child: Image.asset("assets/images/Untitled design (1).png")),                  Positioned(
+                  Image.asset("assets/images/Untitled design (1).png"),                  Positioned(
                     top: 70,
                     left: 30,
                     child: Row(

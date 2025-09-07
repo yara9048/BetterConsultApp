@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled6/Providers/Auth/LoginProvider.dart';
+import '../../../../Providers/Home/User/Others/NotificationProvider.dart';
 import '../../../../generated/l10n.dart';
 import '../../../ConsaltantUi/NavBar/Pages/consultNavBar.dart';
 import '../../../Home/Pages/NavBar.dart';
@@ -316,16 +317,39 @@ class _LoginState extends State<Login> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
-                                onPressed: auth.isLoading
-                                    ? null
-                                    : () {
-                                  if (_formKey.currentState!.validate()) {
-                                    auth.login(
-                                      _emailController.text.trim(),
-                                      _passwordController.text,
-                                    );
-                                  }
-                                },
+                                  onPressed: auth.isLoading
+                                      ? null
+                                      : () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      // Perform login
+                                      await auth.login(
+                                        _emailController.text.trim(),
+                                        _passwordController.text,
+                                      );
+
+                                      if (auth.isSuccess) {
+                                        final prefs = await SharedPreferences.getInstance();
+
+                                        final userId = prefs.getString('user_id') ?? ' ';
+                                        final deviceToken = prefs.getString('device_token') ?? '';
+
+                                        final notificationProvider =
+                                        Provider.of<NotificationProvider>(context, listen: false);
+
+                                        await notificationProvider.notification(
+                                          id: int.parse(userId),
+                                          deviceToken: deviceToken,
+                                        );
+
+                                        if (notificationProvider.isVerified) {
+                                          print("Notification registered successfully!");
+                                        } else if (notificationProvider.errorMessage != null) {
+                                          print("Notification error: ${notificationProvider.errorMessage}");
+                                        }
+                                      }
+                                    }
+                                  },
+
                                 child: auth.isLoading
                                     ?  CircularProgressIndicator(
                                     strokeWidth: 4,
